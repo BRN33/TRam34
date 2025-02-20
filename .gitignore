@@ -1,0 +1,8 @@
+.vs/                     # .vs klasörünü ve içeriğini yok say
+bin/                     # bin klasörünü ve içeriğini yok say
+obj/                     # obj klasörünü ve içeriğini yok say
+*.suo                    # *.suo uzantılı dosyaları yok say
+*.user                   # *.user uzantılı dosyaları yok say
+*.csproj.user            # *.csproj.user uzantılı dosyaları yok say
+__pycache__/             # __pycache__ klasörünü ve içeriğini yok say (Python projeleri için)
+.DS_Store                # .DS_Store dosyasını yok say (macOS için)
