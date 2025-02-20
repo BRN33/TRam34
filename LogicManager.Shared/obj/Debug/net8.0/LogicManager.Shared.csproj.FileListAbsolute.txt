@@ -1,0 +1,40 @@
+D:\TTRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.deps.json
+D:\TTRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.dll
+D:\TTRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.pdb
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.AssemblyInfoInputs.cache
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.AssemblyInfo.cs
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.csproj.CoreCompileInputs.cache
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.dll
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\refint\LogicManager.Shared.dll
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.pdb
+D:\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\ref\LogicManager.Shared.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.deps.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.csproj.AssemblyReference.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.AssemblyInfoInputs.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.AssemblyInfo.cs
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.csproj.CoreCompileInputs.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.sourcelink.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\refint\LogicManager.Shared.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\ref\LogicManager.Shared.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.deps.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Shared.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Persistence.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\bin\Debug\net8.0\LogicManager.Persistence.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.csproj.AssemblyReference.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.AssemblyInfoInputs.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.AssemblyInfo.cs
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.csproj.CoreCompileInputs.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.sourcelink.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.csproj.CopyComplete
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\refint\LogicManager.Shared.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\LogicManager.Shared.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Shared\obj\Debug\net8.0\ref\LogicManager.Shared.dll

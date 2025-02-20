@@ -1,0 +1,199 @@
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\appsettings.Development.json
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\appsettings.json
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.exe
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.deps.json
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.runtimeconfig.json
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.pdb
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\DnsClient.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MongoDB.Bson.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MongoDB.Driver.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Client.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\SharpCompress.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Snappier.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\ZstdSharp.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Application.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Domain.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Infrastructure.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Persistence.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Shared.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Shared.dll
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Application.pdb
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Domain.pdb
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Infrastructure.pdb
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Persistence.pdb
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Shared.pdb
+D:\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Shared.pdb
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.AssemblyReference.cache
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.GeneratedMSBuildEditorConfig.editorconfig
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.AssemblyInfoInputs.cache
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.AssemblyInfo.cs
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.CoreCompileInputs.cache
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.MvcApplicationPartsAssemblyInfo.cs
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.MvcApplicationPartsAssemblyInfo.cache
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.build.json
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.development.json
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.LogicManager.API.Microsoft.AspNetCore.StaticWebAssets.props
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.build.LogicManager.API.props
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.LogicManager.API.props
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.LogicManager.API.props
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.pack.json
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\scopedcss\bundle\LogicManager.API.styles.css
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.CopyComplete
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.dll
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\refint\LogicManager.API.dll
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.pdb
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.genruntimeconfig.cache
+D:\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\ref\LogicManager.API.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\appsettings.Development.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\appsettings.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\rota.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.exe
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.deps.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.runtimeconfig.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\DnsClient.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MediatR.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MediatR.Contracts.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.AspNetCore.OData.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OData.Core.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OData.Edm.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OData.ModelBuilder.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Spatial.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MongoDB.Bson.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MongoDB.Driver.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Client.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\SharpCompress.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Snappier.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\ZstdSharp.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Application.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Domain.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Infrastructure.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Persistence.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Shared.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Shared.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Application.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Domain.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Infrastructure.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Persistence.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Shared.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Shared.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.AssemblyReference.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.GeneratedMSBuildEditorConfig.editorconfig
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.AssemblyInfoInputs.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.AssemblyInfo.cs
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.CoreCompileInputs.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.MvcApplicationPartsAssemblyInfo.cs
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.MvcApplicationPartsAssemblyInfo.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.sourcelink.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.build.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.development.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.LogicManager.API.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.build.LogicManager.API.props
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.LogicManager.API.props
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.LogicManager.API.props
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.pack.json
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\scopedcss\bundle\LogicManager.API.styles.css
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.CopyComplete
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\refint\LogicManager.API.dll
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.pdb
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.genruntimeconfig.cache
+D:\Arge Projeler\TTRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\ref\LogicManager.API.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\appsettings.Development.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\appsettings.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\rota.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.exe
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.deps.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.runtimeconfig.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.API.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\DnsClient.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MediatR.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MediatR.Contracts.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.AspNetCore.OData.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OData.Core.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OData.Edm.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OData.ModelBuilder.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Microsoft.Spatial.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MongoDB.Bson.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\MongoDB.Driver.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Client.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\SharpCompress.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Snappier.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\ZstdSharp.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Application.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Domain.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Infrastructure.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Persistence.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Shared.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Shared.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Application.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Domain.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Infrastructure.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Persistence.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\LogicManager.Shared.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\bin\Debug\net8.0\RabbitMQ.Shared.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.AssemblyReference.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.GeneratedMSBuildEditorConfig.editorconfig
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.AssemblyInfoInputs.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.AssemblyInfo.cs
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.CoreCompileInputs.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.MvcApplicationPartsAssemblyInfo.cs
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.MvcApplicationPartsAssemblyInfo.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.sourcelink.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.build.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.development.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.LogicManager.API.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.build.LogicManager.API.props
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.LogicManager.API.props
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.LogicManager.API.props
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\staticwebassets.pack.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\scopedcss\bundle\LogicManager.API.styles.css
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.csproj.CopyComplete
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\refint\LogicManager.API.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\LogicManager.API.genruntimeconfig.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.API\obj\Debug\net8.0\ref\LogicManager.API.dll

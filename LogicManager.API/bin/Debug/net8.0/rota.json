@@ -1,0 +1,62 @@
+﻿[
+  {
+    "istasyonId": "1",
+    "istasyonAdi": "MESCIDI SELAM",
+    "istasyonMesafeT1": "710",
+    "skipStationState": "False",
+    "istasyonVarisAnonsuMesafesiT1": "650",
+    "istasyonYaklasimAnonsMesafesiT1": "420",
+    "istasyonBaslangıcAnonsuT1": "True",
+    "istasyonAktarmaAnonsuT1": "250",
+    "istasyonOzelAnonsT1": "500",
+    "terminalAnonsuT1": "True",
+    "kapiSagStatusT1": "False",
+    "kapiSolStatusT1": "True",
+    "durusNoktasiMesafesiT1": ""
+  },
+  {
+    "istasyonId": "2",
+    "istasyonAdi": "CEBECİ",
+    "istasyonMesafeT1": "695",
+    "skipStationState": "False",
+    "istasyonVarisAnonsuMesafesiT1": "650",
+    "istasyonYaklasimAnonsMesafesiT1": "420",
+    "istasyonBaslang�cAnonsuT1": "False",
+    "istasyonAktarmaAnonsuT1": "250",
+    "istasyonOzelAnonsT1": "500",
+    "terminalAnonsuT1": "False",
+    "kapiSagStatusT1": "False",
+    "kapiSolStatusT1": "True",
+    "durusNoktasiMesafesiT1": ""
+  },
+  {
+    "istasyonId": "3",
+    "istasyonAdi": "SULTAN ÇİFTLİĞİ",
+    "istasyonMesafeT1": "740",
+    "skipStationState": "False",
+    "istasyonVarisAnonsuMesafesiT1": "650",
+    "istasyonYaklasimAnonsMesafesiT1": "420",
+    "istasyonBaslang�cAnonsuT1": "False",
+    "istasyonAktarmaAnonsuT1": "250",
+    "istasyonOzelAnonsT1": "500",
+    "terminalAnonsuT1": "False",
+    "kapiSagStatusT1": "False",
+    "kapiSolStatusT1": "True",
+    "durusNoktasiMesafesiT1": ""
+  },
+  {
+    "istasyonId": "4",
+    "istasyonAdi": "YENİMAHALLE",
+    "istasyonMesafeT1": "780",
+    "skipStationState": "False",
+    "istasyonVarisAnonsuMesafesiT1": "650",
+    "istasyonYaklasimAnonsMesafesiT1": "420",
+    "istasyonBaslang�cAnonsuT1": "False",
+    "istasyonAktarmaAnonsuT1": "250",
+    "istasyonOzelAnonsT1": "500",
+    "terminalAnonsuT1": "False",
+    "kapiSagStatusT1": "False",
+    "kapiSolStatusT1": "True",
+    "durusNoktasiMesafesiT1": ""
+  }
+]

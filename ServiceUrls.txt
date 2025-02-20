@@ -1,0 +1,10 @@
+"LogEndpoints":
+	{
+		"Alarm": "http://10.3.156.75:5043/api/Producer/alarm",
+		"Error": "http://10.3.156.75:5043/api/Producer/error",
+		"Event": "http://10.3.156.75:5043/api/Producer/event",
+		"Information":"http://10.3.156.75:5043/api/Producer/information",
+		"Warning": "http://10.3.156.75:5043/api/Producer/warning"
+
+
+	}
