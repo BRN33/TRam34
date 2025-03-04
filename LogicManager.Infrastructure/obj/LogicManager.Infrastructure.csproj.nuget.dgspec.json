@@ -49,9 +49,13 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
             "RabbitMQ.Client": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[6.5.0, )"
             }
           },
           "imports": [

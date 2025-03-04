@@ -366,13 +366,13 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.Http.Extensions": {
+            "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
-              "version": "[2.3.0, )"
+              "version": "[9.0.1, )"
             },
-            "Microsoft.Extensions.Http": {
+            "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[10.0.0-preview.1.25080.5, )"
+              "version": "[9.0.1, )"
             }
           },
           "imports": [
@@ -516,9 +516,13 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.Extensions.Http": {
+            "Microsoft.Extensions.Configuration": {
               "target": "Package",
-              "version": "[10.0.0-preview.1.25080.5, )"
+              "version": "[9.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.1, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
