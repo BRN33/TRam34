@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "http": {
+    "LogicManager": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,//true yaparsak swagger web site olarak açılır.
