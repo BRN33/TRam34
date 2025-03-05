@@ -16,7 +16,7 @@ public class LedService : ILedService
     };
     public async Task UpdateDisplay(LedDisplayType displayType, string stationName)
     {
-       
+
         // JSON formatında birleştirme
         var message = new
         {
@@ -28,12 +28,12 @@ public class LedService : ILedService
         string jsonMessage = JsonSerializer.Serialize(message, _jsonOptions);
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("RabbitMQ ye giden Led : "  + jsonMessage); 
+        Console.WriteLine("RabbitMQ ye giden Led : " + jsonMessage);
         Console.ResetColor();
 
-        await RabbitMQHelperAsync.PublishMessageAsync(RabbitMQConstants.RabbitMQHost, RabbitMQConstants.LedExchangeName, ExchangeType.Fanout, "", jsonMessage);
+         RabbitMQHelper.PublishMessage(RabbitMQConstants.RabbitMQHost, RabbitMQConstants.LedExchangeName, ExchangeType.Fanout, "", jsonMessage);
 
         //await RabbitMQHelperAsync.SendMessageToExchangeAsync(RabbitMQConstants.LedExchangeName, jsonMessage);
-       
+
     }
 }

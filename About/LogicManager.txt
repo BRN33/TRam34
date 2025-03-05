@@ -1,0 +1,79 @@
+# Metro YBS LogicManager
+
+Metro YBS (Yolcu Bilgilendirme Sistemi) için geliþtirilmiþ genel amaçlý bir yapý olan LogicManager, tren rotalarýnýn yönetimi, istasyon anonslarý, LED ve LCD ekran kontrolü gibi iþlemleri gerçekleþtirir.
+
+## Ýþlevsellik
+
+LogicManager, aþaðýdaki adýmlarý takip ederek tren rotasýný yönetir:
+
+1.  **Kurulu Rota Bilgisi Alma:**
+    * Bir API'den veya baþka bir yerden kurulu rota bilgilerini alýr.
+    * Eðer rota kurulu deðilse, rota kurulana kadar bekler.
+2.  **Ýstasyon Bilgilerini Okuma:**
+    * Rota kurulduktan sonra, aþaðýdaki JSON formatýndaki gibi tüm istasyon bilgilerini okur:
+
+    ```json
+    {
+        "istasyonId": "1",
+        "istasyonAdi": "MESCIDI SELAM",
+        "istasyonMesafeT1": "710",
+        "istasyonMesafeT2": "450",
+        "istasyonBoyT1": "100",
+        "istasyonBoyT2": "100",
+        "skipStationState": "False",
+        "istasyonAnonsMesafesi": "200",
+        "istasyonYaklasimAnonsMesafesi": "20",
+        "istasyonBaslangýcAnonsu": "False",
+        "istasyonAktarmaAnonsu": "250",
+        "terminalAnonsu": "True",
+        "kapýAcýlýsYönü": "True",
+        "terminalAnonsu": "True"
+    }
+    ```
+
+3.  **Tako Verisini Okuma ve Loglama:**
+    * Tako (takometre) verisini okur ve her okuduðunda log sistemine yazar.
+4.  **Baþlangýç Anonsu:**
+    * Rota kurulduktan sonra, eðer `istasyonBaslangýcAnonsu` deðeri `True` ise, baþlangýç anonsunu yapar.
+    * Anons, `AnonsController` servisine `anons tipi` ve `istasyon ismi` parametreleri ile bir metot çaðrýsý yapýlarak tetiklenir.
+5.  **Gelecek Ýstasyon Anonsu:**
+    * Ýlk istasyondan çýktýktan sonra, `istasyonAnonsMesafesi` deðerine göre gelecek istasyon anonsunu yapar.
+6.  **LED Kontrolü:**
+    * LED servisine, iç veya dýþ LED ve istasyon ismini parametre olarak verdiði bir metot ile LED'leri kontrol eder.
+7.  **LCD Ekran Kontrolü:**
+    * LCD ekrana sonraki istasyon (`nextStation`) ve kalan mesafe bilgilerini gönderir.
+8.  **Yaklaþým Anonsu:**
+    * `istasyonYaklasimAnonsMesafesi` deðerine göre yaklaþým anonsunu yapar.
+9.  **Ýstasyona Varýþ:**
+    * Ýstasyona varýldýðýnda, eðer `ZeroSpeed` deðeri 0 ise ve `AllDoorReleased` deðeri `True` ise, takometre (`tako`) deðerini sýfýrlar.
+10. **Sonraki Ýstasyon:**
+    * Bir sonraki istasyona geçer.
+11. **Rota Sonu:**
+    * Eðer son istasyona gelindiyse, rotanýn bittiðini bildirir.
+12. **Konfigürasyon Ýçin Gerekli Bilgiler:**
+    * appsettings.json dosyasýný açarak gerekli bilgileri doldurun.Zaten açýklamalarý var.
+
+Bu adýmlar, son istasyona gelene kadar tekrarlanýr.
+
+## Baðýmlýlýklar
+
+* API baðlantýsý
+* AnonsController servisi
+* LED servisi
+* LCD ekran arayüzü
+* Log sistemi
+
+## Kullaným
+
+1.  Projeyi klonlayýn.
+2.  Baðýmlýlýklarý yükleyin.
+3.  Gerekli API baðlantýlarýný ve servis konfigürasyonlarýný ayarlayýn.
+4.  Uygulamayý çalýþtýrýn.
+
+## Katkýda Bulunma
+
+Katkýlarýnýzý bekliyoruz! Lütfen pull request göndererek veya sorunlarý bildirerek projeye katkýda bulunun.
+
+## Bilgiler
+
+Ugur Baran...

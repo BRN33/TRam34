@@ -7,11 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogicManager", "LogicManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicManager.API", "LogicManager.API\LogicManager.API.csproj", "{2A7C077D-609D-4CDA-870E-007E1C552F5B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EC025DC9-C6A9-4654-8D8F-6A0078F7395E}"
-	ProjectSection(SolutionItems) = preProject
-		ServiceUrls.txt = ServiceUrls.txt
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicManager.Application", "LogicManager.Application\LogicManager.Application.csproj", "{D7D8790A-65C0-41A0-8127-41B58EC7E2EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicManager.Domain", "..\LogicManager.Domain\LogicManager.Domain.csproj", "{AF817F2B-7F6E-48AE-9907-F2E4B694D906}"
@@ -23,6 +18,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicManager.Shared", "LogicManager.Shared\LogicManager.Shared.csproj", "{26EA4E5C-3D70-443D-8B5E-A06C8F7B7F7A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMQ.Shared", "..\..\RabbitMQ.Shared\RabbitMQ.Shared.csproj", "{C6F1C38C-9FE8-4AD1-B4E5-9162121F4A52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "About", "About", "{AE0E94D6-2A61-4E75-90BF-276A0C3D2338}"
+	ProjectSection(SolutionItems) = preProject
+		LogicManager.txt = LogicManager.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

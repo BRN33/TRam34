@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LogicManager.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b744b3ede3a39f8ca23e4458cdaf76dc080065b5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2d9a16f5916783eacce6cb804e1fc92ca4f4a1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("LogicManager.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LogicManager.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

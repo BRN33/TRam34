@@ -28,12 +28,12 @@ public class LeadershipManager : ITcmsService
         //// Liderlik kontrol algoritması (örneğin TCMS'den bilgi al)
         //var tcmsData = await _tcmsService.GetTcmsDataAsync();
         //isLeader=tcmsData.IsMaster;
-        var endpoint = _configuration.GetSection("IsMaster:isLider");// "!"  işareti null gelmeyeceğini belirtiyor
+        var endpoint = _configuration.GetSection("TcmsSettings:isLider");// "!"  işareti null gelmeyeceğini belirtiyor
 
         bool isLeader = Convert.ToBoolean(endpoint.Value);
 
         // Liderlik bilgisi RabbitMQ'ya gönderiliyor
-        await RabbitMQHelperAsync.PublishMessageAsync(
+          RabbitMQHelper.PublishMessage(
             RabbitMQConstants.RabbitMQHost,
             RabbitMQConstants.RotaExchangeName,
             ExchangeType.Fanout,

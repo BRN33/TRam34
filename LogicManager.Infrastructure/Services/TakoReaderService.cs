@@ -3,7 +3,6 @@ using LogicManager.Infrastructure.Interfaces;
 using LogicManager.Shared.DTOs;
 using LogicManager.Shared.Helpers;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace LogicManager.Infrastructure.Services;
@@ -14,15 +13,16 @@ public class TakoReaderService : ITakoReaderService
     private readonly string _takoConnectionString = ""; // URL düzeltildi
     private readonly HttpClient _httpClient;
     private readonly LoggerHelper _logService;
-    private readonly ILogger<TakoReaderService> _logger;
+   
 
-    public TakoReaderService(HttpClient httpClient, IConfiguration configuration, LoggerHelper logService, ILogger<TakoReaderService> logger)
+    public TakoReaderService(IHttpClientFactory httpClientFactory, IConfiguration configuration, LoggerHelper logService)
     {
-        _httpClient = httpClient;
+        
+        _httpClient = httpClientFactory.CreateClient();
         _configuration = configuration;
         _takoConnectionString = _configuration.GetConnectionString("TakoConnection")!;// "!"   işareti null gelemeyecegini belirtiyor
         _logService = logService;
-        _logger = logger;
+     
 
     }
 
@@ -67,6 +67,7 @@ public class TakoReaderService : ITakoReaderService
             else
             {
                 throw new Exception($"İstek başarısız oldu. Durum kodu: {response.StatusCode}");
+
             }
         }
         catch (Exception ex)
@@ -84,6 +85,7 @@ public class TakoReaderService : ITakoReaderService
             });
 
             throw new Exception($"Bir hata oluştu: {ex.Message}", ex);
+            //return -1;
         }
 
     }

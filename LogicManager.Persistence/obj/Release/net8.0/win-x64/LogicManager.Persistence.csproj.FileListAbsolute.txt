@@ -1,0 +1,13 @@
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\bin\Release\net8.0\win-x64\LogicManager.Persistence.deps.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\bin\Release\net8.0\win-x64\LogicManager.Persistence.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\bin\Release\net8.0\win-x64\LogicManager.Persistence.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.csproj.AssemblyReference.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.AssemblyInfoInputs.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.AssemblyInfo.cs
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.csproj.CoreCompileInputs.cache
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.sourcelink.json
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\refint\LogicManager.Persistence.dll
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\LogicManager.Persistence.pdb
+D:\Arge Projeler\TRam34\LogicManager\LogicManager.Persistence\obj\Release\net8.0\win-x64\ref\LogicManager.Persistence.dll

@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>D:\Arge Projeler\Publishs\LogicManager030325</_PublishTargetUrl>
-    <History>True|2025-03-03T12:50:42.3866542Z;False|2025-03-03T14:24:41.5696458+03:00;False|2025-03-03T14:12:44.0153401+03:00;True|2025-03-03T14:02:08.3474475+03:00;</History>
+    <History>True|2025-03-04T13:12:27.8273669Z;True|2025-03-04T15:13:26.1972602+03:00;True|2025-03-04T11:56:41.9381683+03:00;True|2025-03-04T11:54:32.4848865+03:00;True|2025-03-03T15:50:42.3866542+03:00;False|2025-03-03T14:24:41.5696458+03:00;False|2025-03-03T14:12:44.0153401+03:00;True|2025-03-03T14:02:08.3474475+03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

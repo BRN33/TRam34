@@ -4,6 +4,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using LogicManager.Shared.Helpers;
 using LogicManager.Shared.DTOs;
+using RabbitMQ.Shared;
+using RabbitMQ.Client;
+using LogicManager.Persistence.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace LogicManager.Infrastructure.Services;
 
@@ -20,19 +24,22 @@ public class TrainManagement : ITrainManagement
     private readonly ILcdService _lcdService;
     private readonly ITakoReaderService _takoReaderService;
     private readonly IRouteService _routeService;
-    private readonly ILogger<TrainManagement> _logger;
+    private readonly IMongoDbService _mongoDbService;
+    private readonly LoggerHelper _logService;
+    public List<Station> _stations;
 
     private const int TAKO_DISTANCE_FACTOR = 5; // Her tako pulse için mesafe çarpanı
 
-    private readonly LoggerHelper _logService;
-
-    public List<Station> _stations;
     public int _currentStationIndex;
     public int _TachoMeterPulse;
-    private DateTime _lastTakoReadTime = DateTime.Now;
     public double ZeroSpeed;
     public bool AllDoorsReleased;
-    public bool _isRouteActive;
+    private bool _isRouteActive;
+    public bool IsRouteActive
+    {
+        get => _isRouteActive;
+        private set => _isRouteActive = value;
+    }
     private bool _routeCompleted;
 
     public bool _hasStartAnnouncementPlayed;//Baslangıc Anonsu bir kere göndermek icin
@@ -42,11 +49,15 @@ public class TrainManagement : ITrainManagement
     private bool _transferAnnouncementMade = false;//Aktarma Anonsu bir kere göndermek icin
     private bool _privateAnnouncementMade = false;//Özel Anonsu bir kere göndermek icin
 
+    private bool _isFirstStationInitialized = false;
+    private bool _isFirstRun = true;
+    private bool _nextStationDisplayed = false;
+    private int istasyondanCıkısMesafesi;
 
-
-    public TrainManagement(IServiceProvider serviceProvider, ILogger<TrainManagement> logger, LoggerHelper logger1)
+    public TrainManagement(IServiceProvider serviceProvider, IConfiguration configuration)
     {
         _serviceProvider = serviceProvider.CreateScope();
+        _mongoDbService = _serviceProvider.ServiceProvider.GetRequiredService<IMongoDbService>();
         _anonsService = _serviceProvider.ServiceProvider.GetRequiredService<IAnonsService>();
         _ledService = _serviceProvider.ServiceProvider.GetRequiredService<ILedService>();
         _lcdService = _serviceProvider.ServiceProvider.GetRequiredService<ILcdService>();
@@ -54,38 +65,49 @@ public class TrainManagement : ITrainManagement
         _routeService = _serviceProvider.ServiceProvider.GetRequiredService<IRouteService>();
         _logService = _serviceProvider.ServiceProvider.GetRequiredService<LoggerHelper>();
         //_tcmsService = _serviceProvider.ServiceProvider.GetRequiredService<ITcmsService>();
-
-        _logger = logger;
+        istasyondanCıkısMesafesi = Convert.ToInt32(configuration["TcmsSettings:istasyondanCıkısMesafesi"]);
         _stations = new List<Station>();
+
         // Route service event'ine abone ol
         //((RouteService)_routeService).OnRouteUpdated += HandleRouteUpdated;
+        _routeService.OnRouteUpdated += async (routeData) => await StartTakoProcessing(routeData);
     }
 
-
-
-    private async void HandleRouteUpdated(object sender, List<Station> newRoute)
+    private async Task StartTakoProcessing(List<Station> routeData)
     {
-        try
-        {
-            var filteredStations = FilterAndCalculateSkipStations(newRoute);
+        _stations.Clear();
+        var filteredStations = FilterAndCalculateSkipStations(routeData);
 
-            if (filteredStations.Any())
-            {
-                _stations = filteredStations;
-                _isRouteActive = true;
-                _currentStationIndex = 0;
-                //_accumulatedDistance = 0;
-                await InitializeFirstStation();
-
-                _logger.LogInformation("Yeni rota başlatıldı. İlk istasyon: {StationName}",
-                    _stations[0].stationName);
-            }
-        }
-        catch (Exception ex)
+        if (filteredStations.Any())
         {
-            _logger.LogError(ex, "Yeni rota işlenirken hata oluştu");
+
+            _stations = filteredStations;
+            ResetRoute();
+            //_isRouteActive = true;
+            //_currentStationIndex = 0;
+            //_approachingAnnouncementMade = false;
+            //_arrivalAnnouncementMade = false;
+            //_nextStationDisplayed = false;
+
+            await InitializeFirstStation();
+
+            Console.WriteLine("Yeni rota başlatıldı.....");
         }
+
     }
+    //Yeni rota gelince değerlerş sıfırlayan metot
+    private void ResetRoute()
+    {
+        _isRouteActive = true;
+        _currentStationIndex = 0;
+        _TachoMeterPulse = 0;
+        _hasStartAnnouncementPlayed = false;
+        _approachingAnnouncementMade = false;
+        _arrivalAnnouncementMade = false;
+        _nextStationDisplayed = false;
+
+    }
+
 
     //Tako hesaplama fonksiyonu
     public int CalculateDistance(int tako)
@@ -101,6 +123,11 @@ public class TrainManagement : ITrainManagement
     {
         try
         {
+            // İlk istasyon kontrolü
+            if (_currentStationIndex == 0 && !_isFirstStationInitialized)
+            {
+                await InitializeFirstStation();
+            }
 
             int takoValue = await _takoReaderService.ReadTakoPulseAsync();  // Tako verisini oku
 
@@ -116,7 +143,8 @@ public class TrainManagement : ITrainManagement
                     MessageType = LogType.Information.ToString(),
                     DateTime = DateTime.Now,
                 });
-
+                ////Tako gelince başlayacak
+                //await CheckStationProgress(); // Rota kurulması bekleniyor , Kontrol ediliyor
             }
 
             await CheckStationProgress(); // Rota kurulması bekleniyor , Kontrol ediliyor
@@ -139,62 +167,6 @@ public class TrainManagement : ITrainManagement
         }
     }
 
-    // ** 1.  Rota kontrolü yapar ve ilk işlemleri gerçekleştirir
-    public async Task CheckAndInitializeRouteAsync()
-    {
-        try
-        {
-            // Eğer rota zaten başlatılmışsa tekrar başlatma
-            if (_isRouteActive) return;
-
-            //// Eğer rota zaten bittiyse yenisini bekle
-            //if (_routeCompleted) return;
-
-            var routeStatus = await _routeService.GetAllRouteAsync();// Rota okuma için Api yazılıcak
-
-
-            // **Eğer yeni rota gelmediyse işlem yapma**
-            if (routeStatus == null || !routeStatus.Any())
-            {
-                Console.WriteLine("🚦 Yeni rota bulunamadı, bekleniyor...");
-                return;
-            }
-            var filteredStations = FilterAndCalculateSkipStations(routeStatus);
-
-
-            if (!filteredStations.Any())
-            {
-                _isRouteActive = false;
-                Console.WriteLine("Hiçbir istasyon aktif rota için uygun değil.");
-                return;
-            }
-
-            // Eğer zaten bir istasyon listesi varsa tekrar sıfırlama!
-            if (!_stations.Any())
-            {
-                _stations = filteredStations;
-                _isRouteActive = true;
-                _currentStationIndex = 0;  // Rota ilk kez başlatıldığında sıfırla
-                _hasStartAnnouncementPlayed = false;
-
-                await InitializeFirstStation();
-            }
-
-        }
-        catch (Exception)
-        {
-            await _logService.ErrorSendLogAsync(new ErrorLogDto
-            {
-                MessageSource = "LogicManager",
-                MessageContent = "Rota bilgisi gelmedi veya baglantı yok...",
-                MessageType = LogType.Error.ToString(),
-                DateTime = DateTime.Now,
-                ErrorType = LogType.Error.ToString(),
-                HardwareIP = "10.3.156.55"
-            });
-            Console.WriteLine("Error Rota Durumu Kontrolü ");
-        }
-    }
 
 
 
@@ -214,7 +186,7 @@ public class TrainManagement : ITrainManagement
 
                 await _anonsService.PlayAnnouncementAsync(
                     AnnouncementType.Terminal,
-                    lastStation.stationName!
+                    lastStation.stationName!, lastStation.stationName!
                 );
                 _terminalAnnouncementMade = true;
             }
@@ -232,12 +204,8 @@ public class TrainManagement : ITrainManagement
             DateTime = DateTime.Now,
         });
 
-
     }
-    //private List<Station> FilterAndCalculateSkipStations(List<Station> stations)
-    //{
-    //    return stations.Where(s => !s.skipStationState).ToList();
-    //}
+
 
     //Skipstation durumu kontrolü
     public List<Station> FilterAndCalculateSkipStations(List<Station> stations)
@@ -246,7 +214,7 @@ public class TrainManagement : ITrainManagement
         // 🚨 Eğer `stations` NULL veya boşsa hata almamak için kontrol ekleyelim.
         if (stations == null || !stations.Any())
         {
-            Console.WriteLine("🚨 Uyarı: İstasyon listesi boş veya null!");
+            Console.WriteLine("Uyarı: İstasyon listesi boş veya null!!!");
             return new List<Station>();  // ✅ Boş bir liste döndürerek hatayı önleriz.
         }
 
@@ -318,7 +286,6 @@ public class TrainManagement : ITrainManagement
         //var nextStation = _stations[_currentStationIndex + 1];
         var distance = nextStation.stationDistance - _TachoMeterPulse;
         Console.WriteLine("HESAPLANAN MESAFE =====" + distance);
-        //Burada DDU ve Stretch lcd ye bilgi verilicek
         return distance;
     }
 
@@ -328,8 +295,8 @@ public class TrainManagement : ITrainManagement
     {
         //await _takoReaderService.ResetTakoPulseAsync();
         _TachoMeterPulse = 0;
-        _lastTakoReadTime = DateTime.Now;
-        _logger.LogInformation("Tako değeri sıfırlandı ve RabbitMQ ye bilgi gönderildi");
+
+        Console.WriteLine("Tako değeri sıfırlandı ve RabbitMQ ye bilgi gönderildi");
         await _logService.InformationSendLogAsync(new InformationLogDto
         {
             MessageSource = "LogicManager",
@@ -348,12 +315,16 @@ public class TrainManagement : ITrainManagement
 
         var currentStation = _stations[_currentStationIndex];
         var nextStation = _stations[_currentStationIndex + 1];
-        var distanceToStation = GetDistanceToNextStation(nextStation);
+        //var distanceToStation = GetDistanceToNextStation(nextStation);
         //DDU ve Stretch lcd ye bilgi gönderildi
+        await _lcdService.UpdateDistance(new LcdInfo
+        {
+            RemainingDistance = 0// İstasyona varıldığında kalan mesafe 0 olmalı
+        });
         await _lcdService.UpdateDisplay(new LcdInfo
         {
             NextStation = nextStation.stationName,
-            RemainingDistance = Convert.ToInt32(distanceToStation)
+            //RemainingDistance = Convert.ToInt32(distanceToStation)
         });
         if (ZeroSpeed == 0 && AllDoorsReleased == true)
         {
@@ -373,6 +344,8 @@ public class TrainManagement : ITrainManagement
             // Bayrakları sıfırla
             _approachingAnnouncementMade = false;
             _arrivalAnnouncementMade = false;
+            _nextStationDisplayed = false; // Yeni istasyona geçtiğinde bayrağı sıfırla
+
 
 
             if (IsLastStation())
@@ -401,7 +374,7 @@ public class TrainManagement : ITrainManagement
     {
         _TachoMeterPulse = 0;
         var currentStation = _stations[_currentStationIndex];
-        UpdateDisplays();
+        //UpdateDisplays();
         await _logService.EventSendLogAsync(new EventLogDto
         {
             MessageSource = "LogicManager",
@@ -418,24 +391,30 @@ public class TrainManagement : ITrainManagement
     public async Task InitializeFirstStation()
     {
 
-        // Eğer rota zaten başlatıldıysa tekrar sıfırlama!
-        if (_currentStationIndex != 0) return;
+        //// Eğer rota zaten başlatıldıysa tekrar sıfırlama!
+        //if (_currentStationIndex != 0) return;
 
+        // Eğer rota zaten başlatıldıysa veya ilk istasyon zaten başlatıldıysa, geri dön
+        if (_currentStationIndex != 0 && _isFirstStationInitialized) return;
 
         var currentStation = _stations[_currentStationIndex];
+
+        var lastItem = _stations.LastOrDefault();
+
+        // LED ve LCD güncelleme
+        UpdateDisplays();
 
         // Başlangıç anonsu kontrolü
         if (currentStation.stationStartAnnounce && !_hasStartAnnouncementPlayed)
         {
             await _anonsService.PlayAnnouncementAsync(
                 AnnouncementType.Start,
-                currentStation.stationName!
+                currentStation.stationName!, lastItem.stationName!
             );
             _hasStartAnnouncementPlayed = true;
         }
 
-        // LED ve LCD güncelleme
-        UpdateDisplays();
+
         await _logService.EventSendLogAsync(new EventLogDto
         {
             MessageSource = "LogicManager",
@@ -446,6 +425,7 @@ public class TrainManagement : ITrainManagement
             DestinationIP = "10.3.156.55",
             DestinationName = "LCDServiceSend"
         });
+        _isFirstStationInitialized = true; // İlk istasyon başlatıldı olarak işaretle
     }
 
 
@@ -463,13 +443,21 @@ public class TrainManagement : ITrainManagement
             LedDisplayType.stationStartLed,
             currentStation.stationName!
         );
-
-        // LCD güncelleme
+        // LCD stationName güncelleme
         _lcdService.UpdateDisplay(new LcdInfo
         {
             NextStation = currentStation.stationName,
-            RemainingDistance = Convert.ToInt32(distanceToNext),
-            TotalDistance = Convert.ToInt32(nextStation.stationDistance)
+            //RemainingDistance = Convert.ToInt32(distanceToNext),
+            //TotalDistance = Convert.ToInt32(nextStation.stationDistance)
+        });
+
+        // LCD mesafe güncelleme
+        _lcdService.UpdateDistance(new LcdInfo
+        {
+
+            RemainingDistance = currentStation.stationDistance,
+            TotalDistance = Convert.ToInt32(currentStation.stationDistance)
+
         });
 
     }
@@ -480,17 +468,11 @@ public class TrainManagement : ITrainManagement
     private async Task CheckStationProgress()
     {
 
+        //// Kaynak IP'yi MongoDB'den oku
+        //var trainConfig = await _mongoDbService.GetTrainConfigurationAsync();
 
-        //// 🚨 **Yeni Rota Kontrolü**: Eğer makinist yeni rota kurarsa, eskisini iptal et
-        //if (await _routeService.IsRouteEstablishedAsync())
-        //{
-        //    Console.WriteLine("🚦 Yeni rota algılandı! Mevcut rota iptal ediliyor...");
-        //    await RestartRouteAsync();
-        //    return;  // Yeni rota başlatıldı, eski işlemleri durdur.
-        //}
-
-
-
+        //var sourceIp = trainConfig.Software?.FirstOrDefault(h => h.Name == "Central Maintenance Server")?.ip;
+        //var destinationIp = trainConfig.Software?.FirstOrDefault(s => s.Name == "Central Maintenance Client")?.ip;
 
         //Rota kontrolü yapılıyorrrr
         if (_currentStationIndex >= _stations.Count)
@@ -502,9 +484,9 @@ public class TrainManagement : ITrainManagement
                 MessageContent = "Rota bitti  veya yeni rota  bekleniyorrr...",
                 MessageType = LogType.Event.ToString(),
                 DateTime = DateTime.Now,
-                SourceIP = "10.3.156.224",
-                DestinationIP = "10.3.156.55",
-                DestinationName = "AnonsServisi"
+                SourceIP = "100.10.100.100",
+                DestinationIP = "100.10.100.100",
+                DestinationName = "DDU_Servisi"
             });
 
             _isRouteActive = false;
@@ -513,14 +495,32 @@ public class TrainManagement : ITrainManagement
 
         var currentStation = _stations[_currentStationIndex];
         var nextStation = _stations[_currentStationIndex + 1];
+        var lastItem = _stations.LastOrDefault()!;
         int distanceToStation = GetDistanceToNextStation(currentStation);//Metraj hesaplama
 
-        //Burada DDU ekranına kalan mesafe ve toplam mesafe gönderilicek
+        ////Burada DDU ekranına kalan mesafe ve toplam mesafe gönderilicek
+        await _lcdService.UpdateDistance(new LcdInfo
+        {
+            RemainingDistance = Convert.ToInt32(distanceToStation),
+            TotalDistance = Convert.ToInt32(currentStation.stationDistance)
 
+        });
+
+
+        // Eğer tren istasyondan çıktıktan sonra 20 metre ilerlediyse VE daha önce güncellenmediyse
+        if (distanceToStation <= currentStation.stationDistance - istasyondanCıkısMesafesi && !_nextStationDisplayed)
+        {
+            await _lcdService.UpdateDisplay(new LcdInfo
+            {
+                NextStation = nextStation.stationName
+            });
+
+            _nextStationDisplayed = true; // Bir daha girmemesi için bayrağı true yap
+        }
 
 
         // **1️⃣ Yaklaşma Anonsu (Önce Olmalı)**
-        if (distanceToStation <= currentStation.stationApproachAnnounceDistance &&
+        else if (distanceToStation <= currentStation.stationApproachAnnounceDistance &&
             distanceToStation > currentStation.stationArrivalAnnounceDistance) // 🔹 500m - 150m arası
         {
 
@@ -528,20 +528,16 @@ public class TrainManagement : ITrainManagement
             if (!_approachingAnnouncementMade)
             {
                 await _anonsService.PlayAnnouncementAsync(AnnouncementType.Approaching,
-                nextStation.stationName!);
+                nextStation.stationName!, lastItem.stationName!);
 
-                //_approachingAnnouncementMade = true;
 
                 //Console.WriteLine("Yaklaşma anonsu yapıldı: {Station}", nextStation.stationName);
-                _approachingAnnouncementMade = true;
-            }
-
-            await _ledService.UpdateDisplay(LedDisplayType.stationArrivalLed, nextStation.stationName!);
+                await _ledService.UpdateDisplay(LedDisplayType.stationApproachLed, nextStation.stationName!);
 
                 await _lcdService.UpdateDisplay(new LcdInfo
                 {
                     NextStation = nextStation.stationName,
-                    RemainingDistance = Convert.ToInt32(distanceToStation)
+                    //RemainingDistance = Convert.ToInt32(distanceToStation)
                 });
 
                 //Log servisine gönderildi
@@ -555,8 +551,16 @@ public class TrainManagement : ITrainManagement
                     DestinationIP = "10.3.156.55",
                     DestinationName = "AnonsServisi"
                 });
+                _approachingAnnouncementMade = true;
+            }
 
-             
+
+            await _lcdService.UpdateDistance(new LcdInfo
+            {
+                RemainingDistance = Convert.ToInt32(distanceToStation),
+                TotalDistance = Convert.ToInt32(currentStation.stationDistance)
+            });
+
         }
 
         //// Transfer anonsu kontrolü (450m)
@@ -595,49 +599,38 @@ public class TrainManagement : ITrainManagement
             {
 
                 await _anonsService.PlayAnnouncementAsync(AnnouncementType.Arrival,
-                nextStation.stationName!);
-                //_arrivalAnnouncementMade = true;
+                nextStation.stationName!, lastItem.stationName!);
 
-                //Console.WriteLine("Varış anonsu yapıldı: {Station}", nextStation.stationName);
-
-
-                ////Log servisine gönderildi
-                //await _logService.EventSendLogAsync(new EventLogDto
-                //{
-                //    MessageSource = "LogicManager",
-                //    MessageContent = "Anons yapıldı, Anons Servisine bilgiler gönderildi",
-                //    MessageType = LogType.Event.ToString(),
-                //    DateTime = DateTime.Now,
-                //    SourceIP = "10.3.156.224",
-                //    DestinationIP = "10.3.156.55",
-                //    DestinationName = "AnonsServisi"
-                //});
-
-                _arrivalAnnouncementMade = true;
-
-            }
-            await _ledService.UpdateDisplay(LedDisplayType.stationArrivalLed, nextStation.stationName!);
+                await _ledService.UpdateDisplay(LedDisplayType.stationArrivalLed, nextStation.stationName!);
 
                 await _lcdService.UpdateDisplay(new LcdInfo
                 {
                     NextStation = nextStation.stationName,
-                    RemainingDistance = Convert.ToInt32(distanceToStation)
+                    //RemainingDistance = Convert.ToInt32(distanceToStation)
                 });
 
+                _arrivalAnnouncementMade = true;
 
-                //Log servisine gönderildi
-                await _logService.EventSendLogAsync(new EventLogDto
-                {
-                    MessageSource = "LogicManager",
-                    MessageContent = "Anons yapıldı, DDU ve Stretch LCD ye bilgiler gönderildi",
-                    MessageType = LogType.Event.ToString(),
-                    DateTime = DateTime.Now,
-                    SourceIP = "10.3.156.224",
-                    DestinationIP = "10.3.156.55",
-                    DestinationName = "AnonsServisi"
-                });
+            }
+            //Kalan mesafe kuyruga iletildi
+            await _lcdService.UpdateDistance(new LcdInfo
+            {
+                RemainingDistance = Convert.ToInt32(distanceToStation),
+                TotalDistance = Convert.ToInt32(currentStation.stationDistance)
+            });
+            //Log servisine gönderildi
+            await _logService.EventSendLogAsync(new EventLogDto
+            {
+                MessageSource = "LogicManager",
+                MessageContent = "Anons yapıldı, DDU ve Stretch LCD ye bilgiler gönderildi",
+                MessageType = LogType.Event.ToString(),
+                DateTime = DateTime.Now,
+                SourceIP = "10.3.156.224",
+                DestinationIP = "10.3.156.55",
+                DestinationName = "AnonsServisi"
+            });
 
-         
+
         }
 
         // İstasyona varış
@@ -652,56 +645,33 @@ public class TrainManagement : ITrainManagement
             ZeroSpeed = 0;
             AllDoorsReleased = true;
             //Console.WriteLine($"{nextStation.stationName} istasyonuna ulaşıldı.");
+
+            //RabbitMQHelper.PublishMessage(RabbitMQConstants.RabbitMQHost, RabbitMQConstants.NextStationInfoExchangeName, ExchangeType.Fanout, "", AllDoorsReleased);
             await CheckStationArrivalAsync(ZeroSpeed, AllDoorsReleased);
         }
     }
 
-    // Eğer makinist yeni bir rota kurarsa, mevcut rotayı iptal edip sıfırdan başlatacak.
-
-    private async Task RestartRouteAsync()
+    // Arka plan servisinde veya Tako verisi geldiğinde çağırabilirsiniz.
+    private async Task CheckRouteStatus()
     {
-        Console.WriteLine("🔄 Yeni rota başlatılıyor...");
-
-        _isRouteActive = false;
-        _currentStationIndex = 0;
-        _TachoMeterPulse = 0;
-
-        // **Yeni rotayı al**
-        var newRoute = await _routeService.GetAllRouteAsync();
-
-        if (newRoute == null || !newRoute.Any())  // 🚨 Eğer yeni rota boşsa işlemi iptal et
+        if (_currentStationIndex >= _stations.Count)
         {
-            Console.WriteLine("🚫 Yeni rota alınamadı, beklemeye geçiliyor...");
+            Console.WriteLine("Rota bitti veya yeni rota bekleniyor.");
+            await _logService.EventSendLogAsync(new EventLogDto
+            {
+                MessageSource = "LogicManager",
+                MessageContent = "Rota bitti veya yeni rota bekleniyor...",
+                MessageType = LogType.Event.ToString(),
+                DateTime = DateTime.Now,
+                SourceIP = "100.10.100.100",
+                DestinationIP = "100.10.100.100",
+                DestinationName = "AnonsServisi"
+            });
+
+            _isRouteActive = false;
             return;
         }
-
-        _stations = FilterAndCalculateSkipStations(newRoute);
-
-        _isRouteActive = true;
-        await InitializeFirstStation();
     }
-
-
-    ////Rota bitince yeni rota bekliyor modu test edilicek
-    //private async Task CompleteRouteAsync()
-    //{
-    //    _isRouteActive = false;
-    //    Console.WriteLine("🚆 Rota tamamlandı! Yeni rota bekleniyor...");
-
-    //    // Yeni rota gelene kadar bekleme moduna geç
-    //    while (!await _routeService.IsRouteEstablishedAsync())
-    //    {
-    //        Console.WriteLine("🚦 Yeni rota bekleniyor...");
-    //        await Task.Delay(2000);
-    //    }
-
-    //    Console.WriteLine("✅ Yeni rota bulundu! Başlatılıyor...");
-    //    await RestartRouteAsync();
-    //}
-
-
-
-
 }
 
 

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LogicManager.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7a6111a0116ad9ee1eba78ac5fc7baf39936b27")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("LogicManager.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LogicManager.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

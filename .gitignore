@@ -1,4 +1,4 @@
-.vs/                     # .vs klasörünü ve içeriğini yok say
+!LogicManager/**
 bin/                     # bin klasörünü ve içeriğini yok say
 obj/                     # obj klasörünü ve içeriğini yok say
 *.suo                    # *.suo uzantılı dosyaları yok say

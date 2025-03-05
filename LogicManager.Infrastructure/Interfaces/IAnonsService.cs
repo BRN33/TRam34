@@ -10,7 +10,7 @@ namespace LogicManager.Infrastructure.Interfaces;
 
 public interface IAnonsService
 {
-    Task PlayAnnouncementAsync(AnnouncementType type, string stationName);
+    Task PlayAnnouncementAsync(AnnouncementType type, string stationName, string destinationName);
 }
 
 

@@ -11,4 +11,5 @@ public interface ILcdService
 {
 
     Task  UpdateDisplay(LcdInfo displayInfo);
+    Task UpdateDistance(LcdInfo displayInfo);
 }
