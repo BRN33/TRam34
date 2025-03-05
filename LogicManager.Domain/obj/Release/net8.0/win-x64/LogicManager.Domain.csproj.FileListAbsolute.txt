@@ -1,0 +1,15 @@
+D:\Arge Projeler\TRam34\LogicManager.Domain\bin\Release\net8.0\win-x64\LogicManager.Domain.deps.json
+D:\Arge Projeler\TRam34\LogicManager.Domain\bin\Release\net8.0\win-x64\LogicManager.Domain.dll
+D:\Arge Projeler\TRam34\LogicManager.Domain\bin\Release\net8.0\win-x64\LogicManager.Domain.pdb
+D:\Arge Projeler\TRam34\LogicManager.Domain\bin\Release\net8.0\win-x64\LogicManager.Persistence.dll
+D:\Arge Projeler\TRam34\LogicManager.Domain\bin\Release\net8.0\win-x64\LogicManager.Persistence.pdb
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.csproj.AssemblyReference.cache
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.AssemblyInfoInputs.cache
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.AssemblyInfo.cs
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.csproj.CoreCompileInputs.cache
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.csproj.CopyComplete
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.dll
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\refint\LogicManager.Domain.dll
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\LogicManager.Domain.pdb
+D:\Arge Projeler\TRam34\LogicManager.Domain\obj\Release\net8.0\win-x64\ref\LogicManager.Domain.dll
