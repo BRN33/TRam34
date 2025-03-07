@@ -3,6 +3,7 @@
 Metro YBS (Yolcu Bilgilendirme Sistemi) için geliştirilmiş genel amaçlı bir yapı olan LogicManager, tren rotalarının yönetimi, istasyon anonsları, LED ve LCD ekran kontrolü gibi işlemleri gerçekleştirir.
 
 ## İşlevsellik
+![Tram34](https://github.com/user-attachments/assets/d356f747-fcb0-4c98-b5bd-adaf658867df)
 
 LogicManager, aşağıdaki adımları takip ederek tren rotasını yönetir:
 
