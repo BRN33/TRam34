@@ -28,6 +28,7 @@ public class TakoReaderService : ITakoReaderService
 
     public async Task<int> ReadTakoPulseAsync()
     {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
         try
         {
             // HTTP GET isteği
@@ -38,7 +39,7 @@ public class TakoReaderService : ITakoReaderService
             request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
             // İstek gönderiliyor
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request,cts.Token);
 
 
             if (response.IsSuccessStatusCode)
@@ -73,13 +74,13 @@ public class TakoReaderService : ITakoReaderService
         catch (Exception ex)
         {
             Console.WriteLine("Tako servisinden veri alınamadı.");
-
+            var currentTime = DateTime.Now;
             await _logService.ErrorSendLogAsync(new ErrorLogDto
             {
                 MessageSource = "LogicManager",
                 MessageContent = "Tako dan veri alma servisine ulaşılamıyor...",
                 MessageType = LogType.Error.ToString(),
-                DateTime = DateTime.Now,
+                DateTime = currentTime,
                 ErrorType = LogType.Error.ToString(),
                 HardwareIP = "10.3.156.224"
             });

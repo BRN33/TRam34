@@ -134,14 +134,14 @@ public class TrainManagement : ITrainManagement
             if (takoValue == 1)
             {
                 _TachoMeterPulse = CalculateDistance(_TachoMeterPulse);
-
-                Console.WriteLine($"TAKO verisi suan : {_TachoMeterPulse} at {DateTime.Now}");
+                var currentTime = DateTime.Now;
+                Console.WriteLine($"TAKO verisi suan : {_TachoMeterPulse} at {currentTime}");
                 await _logService.InformationSendLogAsync(new InformationLogDto
                 {
                     MessageSource = "LogicManager",
-                    MessageContent = $"TAKO verisi okundu : {_TachoMeterPulse} at {DateTime.Now}",
+                    MessageContent = $"TAKO verisi okundu : {_TachoMeterPulse} at {currentTime}",
                     MessageType = LogType.Information.ToString(),
-                    DateTime = DateTime.Now,
+                    DateTime = currentTime,
                 });
                 ////Tako gelince başlayacak
                 //await CheckStationProgress(); // Rota kurulması bekleniyor , Kontrol ediliyor
@@ -155,12 +155,13 @@ public class TrainManagement : ITrainManagement
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(" - - - Tako verisi gelmedigi icin bekliyor......");
             Console.ResetColor();
+            var currentTime = DateTime.Now;
             await _logService.ErrorSendLogAsync(new ErrorLogDto
             {
                 MessageSource = "LogicManager",
                 MessageContent = "Tako verisi gelmedigi icin bekliyor...",
                 MessageType = LogType.Error.ToString(),
-                DateTime = DateTime.Now,
+                DateTime = currentTime,
                 ErrorType = LogType.Error.ToString(),
                 HardwareIP = "10.3.156.224"
             });
@@ -196,12 +197,15 @@ public class TrainManagement : ITrainManagement
         _currentStationIndex = 0;
         Console.WriteLine("Route Tamamlandı");
         _routeCompleted = true;
+        //Burada DDU ekranına rota bitti bilgisi verilecek
+
+        var currentTime = DateTime.Now;
         await _logService.InformationSendLogAsync(new InformationLogDto
         {
             MessageSource = "LogicManager",
             MessageContent = "Rota Bitti --- Yeni Rota Bekleniyor ...",
             MessageType = LogType.Information.ToString(),
-            DateTime = DateTime.Now,
+            DateTime = currentTime,
         });
 
     }
@@ -285,7 +289,8 @@ public class TrainManagement : ITrainManagement
 
         //var nextStation = _stations[_currentStationIndex + 1];
         var distance = nextStation.stationDistance - _TachoMeterPulse;
-        Console.WriteLine("HESAPLANAN MESAFE =====" + distance);
+        var consoleText= $"HESAPLANAN MESAFE ===== {distance}";
+        Console.WriteLine(consoleText);
         return distance;
     }
 
@@ -297,12 +302,13 @@ public class TrainManagement : ITrainManagement
         _TachoMeterPulse = 0;
 
         Console.WriteLine("Tako değeri sıfırlandı ve RabbitMQ ye bilgi gönderildi");
+        var currentTime = DateTime.Now;
         await _logService.InformationSendLogAsync(new InformationLogDto
         {
             MessageSource = "LogicManager",
-            MessageContent = $"TAKO verisi Resetlendi : {_TachoMeterPulse} at {DateTime.Now}",
+            MessageContent = $"TAKO verisi Resetlendi : {_TachoMeterPulse} at {currentTime}",
             MessageType = LogType.Information.ToString(),
-            DateTime = DateTime.Now,
+            DateTime = currentTime,
         });
     }
 
@@ -329,12 +335,13 @@ public class TrainManagement : ITrainManagement
         if (ZeroSpeed == 0 && AllDoorsReleased == true)
         {
             Console.WriteLine($"İstasyona Ulasıldı {nextStation.stationName}");
+            var currentTime = DateTime.Now;
             await _logService.InformationSendLogAsync(new InformationLogDto
             {
                 MessageSource = "LogicManager",
-                MessageContent = $"İstasyona Ulasıldı : {nextStation.stationName} at {DateTime.Now}",
+                MessageContent = $"İstasyona Ulasıldı : {nextStation.stationName} at {currentTime}",
                 MessageType = LogType.Information.ToString(),
-                DateTime = DateTime.Now,
+                DateTime = currentTime,
             });
 
             // Takometre sıfırlama
@@ -375,12 +382,13 @@ public class TrainManagement : ITrainManagement
         _TachoMeterPulse = 0;
         var currentStation = _stations[_currentStationIndex];
         //UpdateDisplays();
+        var currentTime = DateTime.Now;
         await _logService.EventSendLogAsync(new EventLogDto
         {
             MessageSource = "LogicManager",
             MessageContent = "Sonraki istasyona geciyor,DDU ve Stretch LCD ye bilgiler gönderildi",
             MessageType = LogType.Event.ToString(),
-            DateTime = DateTime.Now,
+            DateTime = currentTime,
             SourceIP = "10.3.156.224",
             DestinationIP = "10.3.156.55",
             DestinationName = "LCDService"
@@ -414,13 +422,13 @@ public class TrainManagement : ITrainManagement
             _hasStartAnnouncementPlayed = true;
         }
 
-
+        var currentTime = DateTime.Now;
         await _logService.EventSendLogAsync(new EventLogDto
         {
             MessageSource = "LogicManager",
             MessageContent = "DDU ve Stretch LCD ye ilk atamalar yapıldı",
             MessageType = LogType.Event.ToString(),
-            DateTime = DateTime.Now,
+            DateTime = currentTime,
             SourceIP = "10.3.156.224",
             DestinationIP = "10.3.156.55",
             DestinationName = "LCDServiceSend"
@@ -478,12 +486,13 @@ public class TrainManagement : ITrainManagement
         if (_currentStationIndex >= _stations.Count)
         {
             Console.WriteLine("Rota bitti  veya yeni rota  bekleniyorrr.");
+            var currentTime = DateTime.Now;
             await _logService.EventSendLogAsync(new EventLogDto
             {
                 MessageSource = "LogicManager",
                 MessageContent = "Rota bitti  veya yeni rota  bekleniyorrr...",
                 MessageType = LogType.Event.ToString(),
-                DateTime = DateTime.Now,
+                DateTime = currentTime,
                 SourceIP = "100.10.100.100",
                 DestinationIP = "100.10.100.100",
                 DestinationName = "DDU_Servisi"
@@ -541,12 +550,13 @@ public class TrainManagement : ITrainManagement
                 });
 
                 //Log servisine gönderildi
+                var currentTime = DateTime.Now;
                 await _logService.EventSendLogAsync(new EventLogDto
                 {
                     MessageSource = "LogicManager",
                     MessageContent = "Anons yapıldı, DDU ve Stretch LCD ye bilgiler gönderildi",
                     MessageType = LogType.Event.ToString(),
-                    DateTime = DateTime.Now,
+                    DateTime = currentTime,
                     SourceIP = "10.3.156.224",
                     DestinationIP = "10.3.156.55",
                     DestinationName = "AnonsServisi"
@@ -619,12 +629,13 @@ public class TrainManagement : ITrainManagement
                 TotalDistance = Convert.ToInt32(currentStation.stationDistance)
             });
             //Log servisine gönderildi
+            var currentTime = DateTime.Now;
             await _logService.EventSendLogAsync(new EventLogDto
             {
                 MessageSource = "LogicManager",
                 MessageContent = "Anons yapıldı, DDU ve Stretch LCD ye bilgiler gönderildi",
                 MessageType = LogType.Event.ToString(),
-                DateTime = DateTime.Now,
+                DateTime = currentTime,
                 SourceIP = "10.3.156.224",
                 DestinationIP = "10.3.156.55",
                 DestinationName = "AnonsServisi"
@@ -657,12 +668,13 @@ public class TrainManagement : ITrainManagement
         if (_currentStationIndex >= _stations.Count)
         {
             Console.WriteLine("Rota bitti veya yeni rota bekleniyor.");
+            var currentTime = DateTime.Now;
             await _logService.EventSendLogAsync(new EventLogDto
             {
                 MessageSource = "LogicManager",
                 MessageContent = "Rota bitti veya yeni rota bekleniyor...",
                 MessageType = LogType.Event.ToString(),
-                DateTime = DateTime.Now,
+                DateTime = currentTime,
                 SourceIP = "100.10.100.100",
                 DestinationIP = "100.10.100.100",
                 DestinationName = "AnonsServisi"

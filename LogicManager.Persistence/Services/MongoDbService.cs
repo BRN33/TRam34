@@ -29,7 +29,7 @@ public class MongoDbService : IMongoDbService
         var database = client.GetDatabase(mongoSettings.Value.DatabaseName);
         _trainConfigs = database.GetCollection<TrainConfiguration>(mongoSettings.Value.CollectionName);
         _logger = logger;
-         _configuration = configuration;
+        _configuration = configuration;
         _trainId = _configuration["MongoDb:TrainId"]!;
     }
     public async Task<Hardware> GetHardwareByNameAsync(string name)
@@ -38,13 +38,14 @@ public class MongoDbService : IMongoDbService
         {
             return cachedHardware;
         }
+        var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(500)); // 100ms timeout
         try
         {
 
             var filter = Builders<TrainConfiguration>.Filter.ElemMatch(x => x.Hardware,
                 Builders<Hardware>.Filter.Eq(h => h.Name, name));
 
-            var config = await _trainConfigs.Find(filter).FirstOrDefaultAsync();
+            var config = await _trainConfigs.Find(filter).FirstOrDefaultAsync(cts.Token);
             return config?.Hardware?.FirstOrDefault(h => h.Name == name)!;
 
 
@@ -63,12 +64,13 @@ public class MongoDbService : IMongoDbService
         {
             return cachedSoftware;
         }
+        var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(500)); // 100ms timeout
         try
         {
             var filter = Builders<TrainConfiguration>.Filter.ElemMatch(x => x.Software,
                 Builders<Software>.Filter.Eq(s => s.Name, name));
 
-            var config = await _trainConfigs.Find(filter).FirstOrDefaultAsync();
+            var config = await _trainConfigs.Find(filter).FirstOrDefaultAsync(cts.Token);
             return config?.Software?.FirstOrDefault(s => s.Name == name)!;
         }
         catch (Exception)
@@ -80,19 +82,29 @@ public class MongoDbService : IMongoDbService
 
     public async Task<TrainConfiguration> GetTrainConfigurationAsync()
     {
-        
+
         if (_trainConfigCache.TryGetValue(_trainId, out var cachedConfig))
         {
             return cachedConfig;
         }
+
+        var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(1000)); // 100ms timeout
         try
         {
             var filter = Builders<TrainConfiguration>.Filter.Eq(x => x.TrainId, _trainId);
-            return await _trainConfigs.Find(filter).FirstOrDefaultAsync();
+            var trainConfig = await _trainConfigs.Find(filter).FirstOrDefaultAsync(cts.Token);
+            if (trainConfig != null)
+            {
+                _trainConfigCache[_trainId] = trainConfig; // 📌 Cache'e ekliyoruz
+            }
+
+            return trainConfig!;
         }
         catch (Exception)
         {
-            Console.WriteLine("MongoDB'den tren konfigürasyonu alınırken hata oluştu");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(">>> MongoDB'de bu Train ID için kayıt bulunamadı. !!! Baglantıları veya appsetting dosyasındaki TrainId kontrol ediniz");
+            Console.ResetColor();
             //_logService?.ErrorSendLogAsync(new ErrorLogDto
             //{
             //    MessageSource = "LogicManager",

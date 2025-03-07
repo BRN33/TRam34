@@ -1,13 +1,9 @@
-﻿using LogicManager.Domain.Entities;
-using LogicManager.Infrastructure.Interfaces;
+﻿using LogicManager.Infrastructure.Interfaces;
 using LogicManager.Infrastructure.Services;
-using LogicManager.Persistence.Interfaces;
 using LogicManager.Shared.DTOs;
 using LogicManager.Shared.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MongoDB.Bson;
-using Newtonsoft.Json;
 
 namespace LogicManager.Application.Features.Tako;
 
@@ -102,13 +98,18 @@ public class TakoDataCommand : BackgroundService
                     // ✅ Artık sürekli sorgulamak yerine, rota gelmesini bekleyeceğiz
                     if (!trainManagement.IsRouteActive)
                     {
-                        Console.WriteLine(">>> Rota bekleniyor...");
+                        var currentTime = DateTime.Now;
+                        var consoleText = ">>> Kara Tren Rotası Bekleniyor ...: ";
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(consoleText + currentTime);
+                        Console.ResetColor();
+
                         await _logService.InformationSendLogAsync(new InformationLogDto
                         {
                             MessageSource = "LogicManager",
-                            MessageContent = $"Rota kurulması bekleniyor {DateTime.Now}",
+                            MessageContent = $"Rota kurulması bekleniyor {currentTime}",
                             MessageType = LogType.Information.ToString(),
-                            DateTime = DateTime.Now
+                            DateTime = currentTime
                         });
                         await Task.Delay(1000, stoppingToken);
                         continue;

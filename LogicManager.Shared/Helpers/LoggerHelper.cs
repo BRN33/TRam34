@@ -43,7 +43,7 @@ public class LoggerHelper
 
     private async Task SendLogAsync(string endpointType, object logDto)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100)); // 100 milisaniye zaman aşımı
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50)); // 50 milisaniye zaman aşımı
         try
         {
             var response = await _httpClient.PostAsJsonAsync(endpointType, logDto, cts.Token);
