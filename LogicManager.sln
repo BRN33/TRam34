@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicManager.Persistence", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicManager.Shared", "LogicManager.Shared\LogicManager.Shared.csproj", "{26EA4E5C-3D70-443D-8B5E-A06C8F7B7F7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMQ.Shared", "..\..\RabbitMQ.Shared\RabbitMQ.Shared.csproj", "{C6F1C38C-9FE8-4AD1-B4E5-9162121F4A52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMQ.Shared", "..\RabbitMQ.Shared\RabbitMQ.Shared.csproj", "{C6F1C38C-9FE8-4AD1-B4E5-9162121F4A52}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "About", "About", "{AE0E94D6-2A61-4E75-90BF-276A0C3D2338}"
 	ProjectSection(SolutionItems) = preProject

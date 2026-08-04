@@ -180,13 +180,18 @@ public class TrainManagement : ITrainManagement
         Console.WriteLine($"[{tren.CurrentTrain.ID}] diğer trenlerden state sync isteği gönderildi.");
     }
 
-    //5 Sn de bir gönderiliyor
+    // Rota aktifken 5 sn, pasifken 15 sn aralıkla gönderiliyor
     private async Task StartHeartbeatAsync()
     {
         while (true)
         {
             await PublishHeartbeatAsync();
-            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            var heartbeatDelay = IsRouteActive
+                ? TimeSpan.FromSeconds(5)
+                : TimeSpan.FromSeconds(15);
+
+            await Task.Delay(heartbeatDelay);
         }
     }
 
