@@ -15,9 +15,9 @@
 
   <ItemGroup>
     
-    <ProjectReference Include="..\..\RabbitMQ.Shared\RabbitMQ.Shared.csproj" />
+    <ProjectReference Include="..\RabbitMQ.Shared\RabbitMQ.Shared.csproj" />
     
-    <ProjectReference Include="..\..\LogicManager.Domain\LogicManager.Domain.csproj" />
+    <ProjectReference Include="..\LogicManager.Domain\LogicManager.Domain.csproj" />
     <ProjectReference Include="..\LogicManager.Persistence\LogicManager.Persistence.csproj" />
     <ProjectReference Include="..\LogicManager.Shared\LogicManager.Shared.csproj" />
   </ItemGroup>
