@@ -56,6 +56,7 @@ public class TrainManagement : ITrainManagement
 
     private TrainSyncMessage? _lastSyncData;//Tren kaldıgı yerden devam etmesi icin
     private DateTime _lastSyncedTime = DateTime.MinValue;
+    private static readonly TimeSpan SyncDataStaleThreshold = TimeSpan.FromSeconds(20);
 
 
     public bool _hasStartAnnouncementPlayed;//Baslangıc Anonsu bir kere göndermek icin
@@ -157,8 +158,7 @@ public class TrainManagement : ITrainManagement
     public async Task RequestSyncFromOtherTrainsAsync()
     {
         var tren = await _trainCoupledService.GetLastTrainData();
-        if (tren == null) return;
-
+        if (tren?.CurrentTrain?.ID == null || tren.CurrentTrain.IP == null) return;
 
         var request = new TrainSyncMessage
         {
@@ -169,7 +169,6 @@ public class TrainManagement : ITrainManagement
             UpdatedAt = DateTime.Now
         };
 
-
         await _rabbitService.PublishMessage(
         RabbitMQConstants.RabbitMQHost,
         RabbitMQConstants.ContiniueSyncRotaExchangeName,
@@ -177,7 +176,6 @@ public class TrainManagement : ITrainManagement
         "",
         request,
         ManagementEnum.Live);
-
 
         Console.WriteLine($"[{tren.CurrentTrain.ID}] diğer trenlerden state sync isteği gönderildi.");
     }
@@ -196,38 +194,50 @@ public class TrainManagement : ITrainManagement
     private async Task HandleSyncMessage(TrainSyncMessage message)
     {
         var myTrain = await _trainCoupledService.GetLastTrainData();
-        if (myTrain == null) return;
-
+        if (myTrain?.CurrentTrain?.ID == null || myTrain.CurrentTrain.IP == null) return;
 
         if (message.Type == "StateSyncRequest" && message.TrainId != myTrain.CurrentTrain.ID)
         {
+            var stationIndex = _currentStationIndex;
+            if (stationIndex < 0)
+                stationIndex = 0;
+
+            if (_stations.Count > 0)
+                stationIndex = Math.Min(stationIndex, _stations.Count - 1);
+
             var response = new TrainSyncMessage
             {
                 Type = "StateSyncResponse",
                 TrainId = myTrain.CurrentTrain.ID,
                 Ip = myTrain.CurrentTrain.IP,
-                StationIndex = _currentStationIndex,
-                RemainingDistance = (int?)_currentDistance ?? 0,
-                NextStation = _stations.ElementAtOrDefault(_currentStationIndex + 1)?.stationName,
-                TotalDistance = _stations.ElementAtOrDefault(_currentStationIndex)?.stationDistance ?? 0,
+                StationIndex = stationIndex,
+                RemainingDistance = _TachoMeterPulse,
+                DistanceFromStart = _TachoMeterPulse,
+                NextStation = _stations.ElementAtOrDefault(stationIndex + 1)?.stationName,
+                TotalDistance = _stations.ElementAtOrDefault(stationIndex)?.stationDistance ?? 0,
                 UpdatedAt = DateTime.Now
             };
 
+            await _rabbitService.PublishMessage(
+                RabbitMQConstants.RabbitMQHost,
+                RabbitMQConstants.ContiniueSyncRotaExchangeName,
+                ExchangeType.Fanout,
+                "",
+                response,
+                ManagementEnum.Live);
 
-            //await PublishDataToAllCoupledTrainsAsync(response);
             Console.WriteLine($"[SYNC] {myTrain.CurrentTrain.ID} → {message.TrainId} SyncResponse gönderildi.");
             return;
         }
 
-
-        if (message.Type == "Heartbeat" || message.Type == "StateSyncResponse")
+        if ((message.Type == "Heartbeat" || message.Type == "StateSyncResponse")
+            && message.TrainId != myTrain.CurrentTrain.ID)
         {
             if (message.UpdatedAt > _lastSyncedTime)
             {
                 _lastSyncData = message;
                 _lastSyncedTime = message.UpdatedAt;
                 _syncManager.SetSyncMessage(message);
-
 
                 Console.WriteLine($"[SYNC] Güncel state alındı: Station={message.StationIndex}");
             }
@@ -241,6 +251,13 @@ public class TrainManagement : ITrainManagement
         {
             if (!_isRouteActive && _lastSyncData != null)
             {
+                var syncAge = currentTime - _lastSyncData.UpdatedAt;
+                if (syncAge > SyncDataStaleThreshold)
+                {
+                    Console.WriteLine($"[SYNC] Eski veri atlandı. Yaş={syncAge.TotalSeconds:n0}s");
+                    return;
+                }
+
                 Console.WriteLine("[SYNC] Tren durdu + kapılar açıldı → sync datası uygulanıyor...");
                 ActivateRouteFromSync(_lastSyncData);
                 _isRouteActive = true;
@@ -282,16 +299,16 @@ public class TrainManagement : ITrainManagement
 
 
         // Eğer senkronizasyon datası varsa, o istasyondan başla
-        if (_lastSyncData != null && _lastSyncData.StationIndex < _stations.Count)
+        if (_lastSyncData != null && _lastSyncData.StationIndex >= 0 && _lastSyncData.StationIndex < _stations.Count)
         {
             Console.WriteLine($"Sync verisi bulundu: {_lastSyncData.StationIndex}. istasyon");
 
             // Durumları set et
             _currentStationIndex = _lastSyncData.StationIndex;
-            _currentDistance = _lastSyncData.RemainingDistance!;
+            _currentDistance = _lastSyncData.RemainingDistance ?? _lastSyncData.DistanceFromStart ?? 0;
+            _TachoMeterPulse = _lastSyncData.RemainingDistance ?? _lastSyncData.DistanceFromStart ?? 0;
 
             //_stations = _stations.Skip(_currentStationIndex).ToList();
-
 
             // Gerekirse özel bir başlatma yap
             //await InitializeFromSyncedStation(_currentStationIndex, _currentDistance);
@@ -313,11 +330,11 @@ public class TrainManagement : ITrainManagement
 
     public void ActivateRouteFromSync(TrainSyncMessage message)
     {
-        _currentStationIndex = message.StationIndex;
-        _currentDistance = message.DistanceFromStart ?? 0;
+        _currentStationIndex = Math.Max(message.StationIndex, 0);
+        _currentDistance = message.RemainingDistance ?? message.DistanceFromStart ?? 0;
+        _TachoMeterPulse = message.RemainingDistance ?? message.DistanceFromStart ?? 0;
         _isRouteActive = true;
         //_nextStation = message.NextStation;
-
 
         Console.WriteLine($"Rota senkron veriye göre tekrar başlatıldı. {message.StationIndex}. istasyondan devam ediliyor.");
     }
@@ -977,8 +994,7 @@ public class TrainManagement : ITrainManagement
     private async Task PublishHeartbeatAsync()
     {
         var tren = await _trainCoupledService.GetLastTrainData();
-        if (tren == null) return;
-
+        if (tren?.CurrentTrain?.ID == null || tren.CurrentTrain.IP == null) return;
 
         var heartbeat = new TrainSyncMessage
         {
@@ -987,6 +1003,7 @@ public class TrainManagement : ITrainManagement
             Ip = tren.CurrentTrain.IP,
             StationIndex = _currentStationIndex,
             RemainingDistance = _TachoMeterPulse,//(int?)_currentDistance ?? 0,  //veya distanceToStation gelebilir test edilicek
+            DistanceFromStart = _TachoMeterPulse,
             NextStation = _stations.ElementAtOrDefault(_currentStationIndex + 1)?.stationName,
             TotalDistance = _stations.ElementAtOrDefault(_currentStationIndex)?.stationDistance ?? 0,
             UpdatedAt = DateTime.Now
