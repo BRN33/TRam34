@@ -14,5 +14,7 @@ namespace LogicManager.Shared.DTOs.BaseDto
         public string? MessageContent { get; set; }
         public string? MessageType { get; set; }
         public DateTime DateTime { get; set; }
+
+       
     }
 }

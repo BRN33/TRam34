@@ -5,9 +5,8 @@ namespace LogicManager.Infrastructure.Interfaces
     public interface ITrainManagement
     {
 
-
-        Task CheckAndInitializeRouteAsync();
-
+        bool IsRouteActive { get; }
+      
         List<Station> FilterAndCalculateSkipStations(List<Station> stations);
 
 
@@ -18,7 +17,7 @@ namespace LogicManager.Infrastructure.Interfaces
         void UpdateDisplays();
 
 
-        Task CheckStationArrivalAsync(double ZeroSpeed,bool AllDoorsReleased);
+        Task CheckStationArrivalAsync(bool ZeroSpeed,bool AllDoorsReleased);
 
         Task MoveToNextStationAsync();
 
@@ -30,6 +29,6 @@ namespace LogicManager.Infrastructure.Interfaces
 
         int CalculateDistance(int takoValue);
         Task ReadAndProcessTakoAsync();
-        //Task RestartRouteAsync();
+       
     }
 }

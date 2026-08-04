@@ -5,191 +5,220 @@ using LogicManager.Shared.Helpers;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Shared;
+using System.Collections.Concurrent;
+using TRAM34_DDU.Core.Application.Interfaces.Services;
+using TRAM34_DDU.Core.Application.RabbitMQService;
 
 namespace LogicManager.Infrastructure.Services;
 
 public class RouteService : IRouteService
 {
-    private bool _isRabbitConsumerInitialized = false;  // Consumer'ın zaten başlatıldığını kontrol etmek için
+
     public List<Station> _stations = new List<Station>(); // Verileri saklayacağımız liste
     private readonly object _lock = new object();
     private readonly LoggerHelper? _logService;
+    private readonly IRabbitService RabbitMQService;
 
-    // 📢 **Event Tanımı**: Rota değiştiğinde tetiklenecek
-    public event Action<List<Station>>? OnRouteUpdated;
+    //private ConcurrentBag<Station> _stations = new ConcurrentBag<Station>();
+    public event Action<List<Station>>? OnRouteUpdated; // Rota güncellendiğinde tetiklenecek event
 
-    public RouteService(LoggerHelper logService)
+    public RouteService(LoggerHelper logService,IRabbitService rabbitService)
     {
         _logService = logService;
+        RabbitMQService = rabbitService;
         InitializeRabbitMQConsumer();
     }
 
-    private void InitializeRabbitMQConsumer()
+    private async void InitializeRabbitMQConsumer()
     {
-        Task.Run(async () =>
+        await RabbitMQService.ConsumerAsync<List<Station>>(
+                       RabbitMQConstants.RabbitMQHost,
+                                  RabbitMQConstants.RotaExchangeName,
+                                             ExchangeType.Fanout,
+                                                        RabbitMQConstants.RotaQueueName,
+                                                                   "",
+                                                                   ManagementEnum.LastMessage,
+                                                                              HandleNewRoute);
+
+    }
+
+    private async Task HandleNewRoute(List<Station> stationList)
+    {
+        lock (_lock)
         {
-            await RabbitMQHelperAsync.ConsumeMessageAsync<List<Station>>(
-                RabbitMQConstants.RabbitMQHost,
-                RabbitMQConstants.RotaExchangeName,
-                ExchangeType.Fanout,
-                RabbitMQConstants.RotaQueueName,
-                "",
-                HandleNewRoute);
+            _stations = new List<Station>(stationList); // Gelen liste neyse onu al
+        }
+
+        OnRouteUpdated?.Invoke(stationList); // Güncellenmiş rotayı bildirim olarak gönder
+
+        string logMessage = stationList.Count > 0
+            ? $"Yeni rota alındı: {stationList.Count} istasyon"
+            : "Rota iptal edildi."; // Eğer liste boşsa rota iptal edilmiş demektir.
+
+        await _logService.InformationSendLogAsync(new InformationLogDto
+        {
+            MessageSource = "LogicManager",
+            MessageContent = logMessage,
+            MessageType = LogType.Information.ToString(),
+            DateTime = DateTime.Now
         });
     }
 
 
-    private async Task HandleNewRoute(List<Station> stationList)
-    {
-        if (stationList != null && stationList.Any())
-        {
-            lock (_lock)
-            {
-                _stations.Clear();
-                _stations.AddRange(stationList);
-            }
-
-            // Event'i tetikle
-            OnRouteUpdated?.Invoke(stationList);
-
-            await _logService.InformationSendLogAsync(new InformationLogDto
-            {
-                MessageSource = "LogicManager",
-                MessageContent = $"Yeni rota alındı: {stationList.Count} istasyon",
-                MessageType = LogType.Information.ToString(),
-                DateTime = DateTime.Now
-            });
-        }
-    }
-
-
-    public async Task<List<Station>> GetAllRouteAsync()
+    public Task<List<Station>> GetAllRouteAsync()
     {
         lock (_lock)
         {
-            return new List<Station>(_stations);
+            return Task.FromResult(new List<Station>(_stations));
         }
     }
 
-    public async Task<bool> IsRouteEstablishedAsync()
+    public Task<bool> IsRouteEstablishedAsync()
     {
         lock (_lock)
         {
-            return _stations != null && _stations.Any();
+            return Task.FromResult(_stations.Count > 0);
         }
     }
-
-    //public async Task<List<Station>> GetAllRouteAsync()
-    //{
-    //    lock (_lock)
-    //    {
-
-    //        // Eğer liste daha önce dolduysa tekrar okumaya gerek yok
-    //        if (_stations.Any())
-    //        {
-    //            return _stations;
-    //        }
-    //    }
-
-    //    _stations.Clear();  // Önce eski verileri temizle
-    //    await RabbitMQHelperAsync.ConsumeMessageAsync<List<Station>>(RabbitMQConstants.RabbitMQHost, RabbitMQConstants.RotaExchangeName, ExchangeType.Fanout, RabbitMQConstants.RotaQueueName, "", async (stationList) =>
-    //    {
-    //        if (stationList != null && stationList.Any())
-    //        {
-    //            _stations.Clear();  // Önce eski verileri temizle
-    //            _stations.AddRange(stationList);
-    //            Console.WriteLine("Geliyorrrr listeeee: " + _stations.First());
-    //            Console.WriteLine($"Rota Bilgisi Eklendi: {_stations.Count} istasyon yüklendi.");
-
-    //            //**Event'i tetikle**: Yeni rota geldiğinde dinleyicilere haber ver
-    //            OnRouteUpdated?.Invoke(_stations);
-    //            //// **Eski veriyi silmeden önce yeni verinin dolmasını bekle**
-    //            //var tempStations = new List<Station>(stationList);  // Yeni gelen veriyi geçici listede tut
-    //            //if (tempStations.Any())
-    //            //{
-    //            //    _stations.Clear();  // Eski veriyi temizle
-    //            //    _stations.AddRange(tempStations);  // Yeni veriyi ekle
-    //            //}
-
-    //        }
-    //    });
-
-    //    return _stations;
-
-    //}
-
-
-    //// Rota dolu mu boş mu kontrolü
-    //public async Task<bool> IsRouteEstablishedAsync()
-    //{
-    //    try
-    //    {
-            
-    //        var response = await GetAllRouteAsync();
-
-    //        // 🚨 Eğer yeni rota listesi boşsa, rota kurulmamıştır.
-    //        if (response == null || !response.Any())
-    //        {
-    //            Console.WriteLine("--- > > > Henüz yeni rota gelmedi. Bekleniyor >>>...");
-    //            return false;
-    //        }
-
-    //        //// ✅ Eğer daha önce bir rota varsa, eski rotayı temizleyelim.
-    //        //if (_stations.Any())
-    //        //{
-    //        //    Console.WriteLine("🔄 Yeni rota bulundu! Önceki rota temizleniyor...");
-    //        //    _stations.Clear();
-    //        //}
-
-
-    //        //Console.WriteLine("✅ Yeni rota bulundu ve yüklendi!");
-    //        //_stations = response;  // Yeni rotayı yükle
-
-    //        return true;
-
-
-
-
-
-
-    //        //if (stationList != null && stationList.Any())
-    //        //{
-    //        //    Console.WriteLine($"🚆 Yeni rota alındı! {stationList.Count} istasyon yüklendi.");
-
-    //        //    // **Eski veriyi temizlemeden önce yeni rotanın gerçekten farklı olup olmadığını kontrol et**
-    //        //    if (!_stations.SequenceEqual(stationList, new StationComparer()))
-    //        //    {
-    //        //        _stations = new List<Station>(stationList); // 🔄 Yeni referans ata
-    //        //        Console.WriteLine("🔄 Rota güncellendi.");
-    //        //    }
-    //        //    else
-    //        //    {
-    //        //        Console.WriteLine("✅ Rota zaten aynı, güncelleme yapılmadı.");
-    //        //    }
-    //        //}
-
-
-
-
-
-
-
-    //    }
-    //    catch (Exception)
-    //    {
-            
-    //        Console.WriteLine($"🚨 Rota kontrol hatası:");
-    //        await _logService.ErrorSendLogAsync(new ErrorLogDto
-    //        {
-    //            MessageSource = "LogicManager",
-    //            MessageContent = "Rota bilgisi gelmedi veya baglantı yok...",
-    //            MessageType = LogType.Error.ToString(),
-    //            DateTime = DateTime.Now,
-    //            ErrorType = LogType.Error.ToString(),
-    //            HardwareIP = "10.3.156.55"
-    //        });
-    //        return false;
-    //    }
-    //}
 
 }
+
+
+//using LogicManager.Domain.Entities;
+//using LogicManager.Infrastructure.Interfaces;
+//using LogicManager.Shared.DTOs;
+//using LogicManager.Shared.Helpers;
+//using Newtonsoft.Json;
+//using RabbitMQ.Client;
+//using RabbitMQ.Shared;
+//using System.Collections.Concurrent;
+//using TRAM34_DDU.Core.Application.RabbitMQService;
+//using System.IO;
+
+//namespace LogicManager.Infrastructure.Services;
+
+//public class RouteService : IRouteService
+//{
+//    private List<Station> _stations = new List<Station>(); // Verileri saklayacağımız liste
+//    private readonly object _lock = new object();
+//    private readonly LoggerHelper? _logService;
+//    private const string LastPositionFile = "last_position.json";
+
+//    public event Action<List<Station>>? OnRouteUpdated; // Rota güncellendiğinde tetiklenecek event
+
+//    public RouteService(LoggerHelper logService)
+//    {
+//        _logService = logService;
+//        EnsureJsonFileExists(); // JSON dosyasını kontrol et ve oluştur
+//        LoadLastPosition(); // JSON'dan en son istasyonu yükle
+//        InitializeRabbitMQConsumer();
+//    }
+
+//    private async void InitializeRabbitMQConsumer()
+//    {
+//        await RabbitMQService.ConsumerAsync<List<Station>>(
+//            RabbitMQConstants.RabbitMQHost,
+//            RabbitMQConstants.RotaExchangeName,
+//            ExchangeType.Fanout,
+//            RabbitMQConstants.RotaQueueName,
+//            "",
+//            ManagementEnum.LastMessage,
+//            HandleNewRoute);
+//    }
+
+//    private async Task HandleNewRoute(List<Station> stationList)
+//    {
+//        lock (_lock)
+//        {
+//            _stations = new List<Station>(stationList);
+//        }
+
+//        int lastStationId = GetLastStationFromJson();
+//        if (lastStationId != -1)
+//        {
+//            var lastStationIndex = _stations.FindIndex(s => s.stationSequenceId == lastStationId);
+//            if (lastStationIndex != -1)
+//            {
+//                _stations = _stations.Skip(lastStationIndex).ToList(); // Kaldığı yerden devam et
+//            }
+//        }
+
+//        OnRouteUpdated?.Invoke(_stations);
+
+
+//        string logMessage = _stations.Count > 0
+//            ? $"Yeni rota alındı, kaldığı yerden devam ediyor: {_stations.Count} istasyon"
+//            : "Rota iptal edildi.";
+
+//        await _logService?.InformationSendLogAsync(new InformationLogDto
+//        {
+//            MessageSource = "LogicManager",
+//            MessageContent = logMessage,
+//            MessageType = LogType.Information.ToString(),
+//            DateTime = DateTime.Now
+//        });
+//    }
+
+//    public Task<List<Station>> GetAllRouteAsync()
+//    {
+//        lock (_lock)
+//        {
+//            return Task.FromResult(new List<Station>(_stations));
+//        }
+//    }
+
+//    public Task<bool> IsRouteEstablishedAsync()
+//    {
+//        lock (_lock)
+//        {
+//            return Task.FromResult(_stations.Count > 0);
+//        }
+//    }
+
+//    public void SaveLastStationToJson(int stationId)
+//    {
+//        var data = new { LastStationId = stationId };
+//        File.WriteAllText(LastPositionFile, JsonConvert.SerializeObject(data));
+//    }
+
+//    public int GetLastStationFromJson()
+//    {
+//        if (!File.Exists(LastPositionFile)) return -1;
+
+//        var json = File.ReadAllText(LastPositionFile);
+//        if (!string.IsNullOrWhiteSpace(json))
+//        {
+//            try
+//            {
+//                var data = JsonConvert.DeserializeObject<dynamic>(json);
+//                return data?.LastStationId ?? -1;
+//            }
+//            catch (JsonException)
+//            {
+//                return -1; // JSON bozuksa -1 döndür
+//            }
+//        }
+//        return -1; // Veri yoksa
+//    }
+
+//    private void LoadLastPosition()
+//    {
+//        int lastStationId = GetLastStationFromJson();
+//        if (lastStationId != -1)
+//        {
+//            Console.WriteLine($"Sistem açıldı, en son {lastStationId} istasyonundaydınız.");
+//        }
+//    }
+
+//    private void EnsureJsonFileExists()
+//    {
+//        if (!File.Exists(LastPositionFile))
+//        {
+//            File.WriteAllText(LastPositionFile, JsonConvert.SerializeObject(new { LastStationId = -1 }));
+//        }
+//    }
+//}
+
+
+
+

@@ -13,7 +13,6 @@
 		<PackageReference Include="MediatR" Version="12.4.1" />
 		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.1.3" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0-preview.1.25080.5" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

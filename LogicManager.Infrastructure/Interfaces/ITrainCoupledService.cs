@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 
 namespace LogicManager.Infrastructure.Interfaces;
 
-public interface ILcdService
+public interface ITrainCoupledService
 {
+    Task<TrainCouplingData> GetLastTrainData();
 
-    Task  UpdateDisplay(LcdInfo displayInfo);
-    Task UpdateDistance(LcdInfo displayInfo);
+
+    event Action<TrainCouplingData> OnTrainDataUpdated;
+
 }
+

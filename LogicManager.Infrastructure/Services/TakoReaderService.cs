@@ -3,7 +3,8 @@ using LogicManager.Infrastructure.Interfaces;
 using LogicManager.Shared.DTOs;
 using LogicManager.Shared.Helpers;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using RabbitMQ.Shared;
 using System.Text.Json;
 
 namespace LogicManager.Infrastructure.Services;
@@ -14,20 +15,27 @@ public class TakoReaderService : ITakoReaderService
     private readonly string _takoConnectionString = ""; // URL düzeltildi
     private readonly HttpClient _httpClient;
     private readonly LoggerHelper _logService;
-    private readonly ILogger<TakoReaderService> _logger;
+    public event Action<int> TakoVerisiOkundu;
+    private readonly object _lock = new object();
 
-    public TakoReaderService(HttpClient httpClient, IConfiguration configuration, LoggerHelper logService, ILogger<TakoReaderService> logger)
+
+    public TakoReaderService(IHttpClientFactory httpClientFactory, IConfiguration configuration, LoggerHelper logService)
     {
-        _httpClient = httpClient;
+        
+        _httpClient = httpClientFactory.CreateClient();
         _configuration = configuration;
         _takoConnectionString = _configuration.GetConnectionString("TakoConnection")!;// "!"   işareti null gelemeyecegini belirtiyor
         _logService = logService;
-        _logger = logger;
+        //InitializeRabbitMQConsumer();
+
 
     }
 
+  
+
     public async Task<int> ReadTakoPulseAsync()
     {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
         try
         {
             // HTTP GET isteği
@@ -38,7 +46,7 @@ public class TakoReaderService : ITakoReaderService
             request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
             // İstek gönderiliyor
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request,cts.Token);
 
 
             if (response.IsSuccessStatusCode)
@@ -67,23 +75,25 @@ public class TakoReaderService : ITakoReaderService
             else
             {
                 throw new Exception($"İstek başarısız oldu. Durum kodu: {response.StatusCode}");
+
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine("Tako servisinden veri alınamadı.");
-
+            var currentTime = DateTime.Now;
             await _logService.ErrorSendLogAsync(new ErrorLogDto
             {
                 MessageSource = "LogicManager",
                 MessageContent = "Tako dan veri alma servisine ulaşılamıyor...",
                 MessageType = LogType.Error.ToString(),
-                DateTime = DateTime.Now,
-                ErrorType = LogType.Error.ToString(),
-                HardwareIP = "10.3.156.224"
+                DateTime = currentTime,
+                MessageSourceType = "Software",
+                HardwareIP = "192.168.1.30"
             });
 
             throw new Exception($"Bir hata oluştu: {ex.Message}", ex);
+            //return -1;
         }
 
     }

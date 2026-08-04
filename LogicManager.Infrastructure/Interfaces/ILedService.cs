@@ -8,7 +8,7 @@ namespace LogicManager.Infrastructure.Interfaces;
 
 public interface ILedService
 {
-   Task UpdateDisplay(LedDisplayType displayType, string stationName);
+   Task UpdateDisplay(LedDisplayType displayType, string stationName, bool isExternal = false);
 }
 
 public enum LedDisplayType

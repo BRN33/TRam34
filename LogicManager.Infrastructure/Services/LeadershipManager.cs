@@ -5,41 +5,54 @@ using LogicManager.Shared.Helpers;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Shared;
+using TRAM34_DDU.Core.Application.Interfaces.Services;
+using TRAM34_DDU.Core.Application.RabbitMQService;
 
 namespace LogicManager.Infrastructure.Services;
 
-public class LeadershipManager : ITcmsService
+public class LeadershipManager 
 {
 
     private readonly ITcmsService _tcmsService;
     private readonly LoggerHelper _logService;
     private readonly IConfiguration _configuration; // appsettings.json dan veri cekmek icin
+    private readonly IRabbitService RabbitMQService;
 
-    public LeadershipManager(IConfiguration configuration, LoggerHelper logger)
+    public LeadershipManager(IConfiguration configuration, LoggerHelper logger,IRabbitService rabbitService)
     {
         _configuration = configuration;
         _logService = logger;
+        RabbitMQService = rabbitService;
+
     }
 
-    public event EventHandler<TcmsData> OnTcmsDataReceived;
+    public event Action<TcmsData>? OnTakoDataUpdated;
 
     public async Task<bool> CheckIfLeaderAsync()
     {
         //// Liderlik kontrol algoritması (örneğin TCMS'den bilgi al)
         //var tcmsData = await _tcmsService.GetTcmsDataAsync();
         //isLeader=tcmsData.IsMaster;
-        var endpoint = _configuration.GetSection("IsMaster:isLider");// "!"  işareti null gelmeyeceğini belirtiyor
+        var endpoint = _configuration.GetSection("TcmsSettings:isLider");// "!"  işareti null gelmeyeceğini belirtiyor
 
         bool isLeader = Convert.ToBoolean(endpoint.Value);
 
         // Liderlik bilgisi RabbitMQ'ya gönderiliyor
-        await RabbitMQHelperAsync.PublishMessageAsync(
-            RabbitMQConstants.RabbitMQHost,
-            RabbitMQConstants.RotaExchangeName,
-            ExchangeType.Fanout,
-            "",
-            isLeader
-        );
+        //  RabbitMQHelper.PublishMessage(
+        //    RabbitMQConstants.RabbitMQHost,
+        //    RabbitMQConstants.RotaExchangeName,
+        //    ExchangeType.Fanout,
+        //    "",
+        //    isLeader
+        //);
+        await RabbitMQService.PublishMessage(
+                       RabbitMQConstants.RabbitMQHost,
+                                  RabbitMQConstants.LeadExchangeName,
+                                             ExchangeType.Fanout,
+                                                        "",
+                                                                   isLeader,
+                                                                              ManagementEnum.Live
+                                                                                     );
 
         await _logService.InformationSendLogAsync(new InformationLogDto
         {
@@ -52,6 +65,8 @@ public class LeadershipManager : ITcmsService
         Console.WriteLine($"Liderlik Durumu: {(isLeader ? "Lider" : "Takipçi")}");
         return isLeader;
     }
+
+    
 
     public Task<TcmsData> GetTcmsDataAsync()
     {

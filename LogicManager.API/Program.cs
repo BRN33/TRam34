@@ -1,14 +1,12 @@
 using LogicManager.Application.Features.Tako;
-using LogicManager.Domain.Services;
 using LogicManager.Infrastructure.Interfaces;
 using LogicManager.Infrastructure.Services;
-using LogicManager.Persistence.Data;
 using LogicManager.Persistence.Interfaces;
 using LogicManager.Persistence.Models;
 using LogicManager.Persistence.Services;
 using LogicManager.Shared.Helpers;
-using Microsoft.Extensions.Configuration;
 using System.Text.Json;
+using TRAM34_DDU.Core.Application.Interfaces.Services;
 
 namespace LogicManager.API
 {
@@ -26,26 +24,47 @@ namespace LogicManager.API
             builder.Services.AddControllers();
 
             // Gerekli servislerin DI kaydý
+            //builder.Services.AddSerilog();
+            //Log.Logger = new LoggerConfiguration()
+            //    .WriteTo.Console()
+            //    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+            //    .CreateLogger();
 
 
+            //builder.Host.UseSerilog();
+
+            
             builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDb"));
             builder.Services.AddSingleton<IMongoDbService, MongoDbService>();
 
-            //builder.Services.AddSingleton<ITcmsService, TcmsService>();
-            builder.Services.AddSingleton<LeadershipManager>();//Master Slave yapýsý icin
+            builder.Services.AddSingleton<ITcmsService, TcmsService>();
+            //builder.Services.AddSingleton<LeadershipManager>();//Master Slave yapýsý icin
 
             builder.Services.AddSingleton<IAnonsService, AnonsService>();
             builder.Services.AddSingleton<ILedService, LedService>();
             builder.Services.AddSingleton<ILcdService, LcdService>();
-            builder.Services.AddSingleton<ITakoReaderService, TakoReaderService>();
+            builder.Services.AddSingleton<ITrainCoupledService, TrainCoupledService>();
+            builder.Services.AddSingleton<ITakoReaderService, TakoReaderService>(); 
             builder.Services.AddSingleton<IRouteService, RouteService>();
+            builder.Services.AddSingleton<ISyncManager, SyncManager>();
             builder.Services.AddSingleton<ITrainManagement, TrainManagement>();
 
-
+            builder.Services.AddSingleton<IRabbitService, RabbitService>();
+            
             builder.Services.AddHostedService<TakoDataCommand>();
             builder.Services.AddHttpClient<TakoReaderService>();
+
+            //// LoggerBackgroundService'i ekle
+            //builder.Services.AddHostedService<LoggerBackgroundService>();
+
+            // LogEndpointSettings sýnýfýna baðla.
+            builder.Services.Configure<LogEndpointSettings>(
+                builder.Configuration.GetSection("LogEndpoints")
+            );
             builder.Services.AddHttpClient<LoggerHelper>();
 
+
+           
 
             //Console da log seviyesini belirleme
             builder.Logging.ClearProviders();
@@ -61,22 +80,20 @@ namespace LogicManager.API
             });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            //builder.Services.AddSwaggerGen();
 
 
             var app = builder.Build();
 
-            // middleware   katmaný
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            //// middleware   katmaný
+            //// Configure the HTTP request pipeline.
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
 
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
