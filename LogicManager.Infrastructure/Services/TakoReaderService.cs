@@ -3,6 +3,8 @@ using LogicManager.Infrastructure.Interfaces;
 using LogicManager.Shared.DTOs;
 using LogicManager.Shared.Helpers;
 using Microsoft.Extensions.Configuration;
+using RabbitMQ.Client;
+using RabbitMQ.Shared;
 using System.Text.Json;
 
 namespace LogicManager.Infrastructure.Services;
@@ -13,7 +15,9 @@ public class TakoReaderService : ITakoReaderService
     private readonly string _takoConnectionString = ""; // URL düzeltildi
     private readonly HttpClient _httpClient;
     private readonly LoggerHelper _logService;
-   
+    public event Action<int> TakoVerisiOkundu;
+    private readonly object _lock = new object();
+
 
     public TakoReaderService(IHttpClientFactory httpClientFactory, IConfiguration configuration, LoggerHelper logService)
     {
@@ -22,13 +26,16 @@ public class TakoReaderService : ITakoReaderService
         _configuration = configuration;
         _takoConnectionString = _configuration.GetConnectionString("TakoConnection")!;// "!"   işareti null gelemeyecegini belirtiyor
         _logService = logService;
-     
+        //InitializeRabbitMQConsumer();
+
 
     }
 
+  
+
     public async Task<int> ReadTakoPulseAsync()
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
         try
         {
             // HTTP GET isteği
@@ -81,8 +88,8 @@ public class TakoReaderService : ITakoReaderService
                 MessageContent = "Tako dan veri alma servisine ulaşılamıyor...",
                 MessageType = LogType.Error.ToString(),
                 DateTime = currentTime,
-                ErrorType = LogType.Error.ToString(),
-                HardwareIP = "10.3.156.224"
+                MessageSourceType = "Software",
+                HardwareIP = "192.168.1.30"
             });
 
             throw new Exception($"Bir hata oluştu: {ex.Message}", ex);

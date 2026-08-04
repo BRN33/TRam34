@@ -6,6 +6,7 @@ using LogicManager.Persistence.Models;
 using LogicManager.Persistence.Services;
 using LogicManager.Shared.Helpers;
 using System.Text.Json;
+using TRAM34_DDU.Core.Application.Interfaces.Services;
 
 namespace LogicManager.API
 {
@@ -32,25 +33,38 @@ namespace LogicManager.API
 
             //builder.Host.UseSerilog();
 
-
+            
             builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDb"));
             builder.Services.AddSingleton<IMongoDbService, MongoDbService>();
 
-            //builder.Services.AddSingleton<ITcmsService, TcmsService>();
-            builder.Services.AddSingleton<LeadershipManager>();//Master Slave yapýsý icin
+            builder.Services.AddSingleton<ITcmsService, TcmsService>();
+            //builder.Services.AddSingleton<LeadershipManager>();//Master Slave yapýsý icin
 
             builder.Services.AddSingleton<IAnonsService, AnonsService>();
             builder.Services.AddSingleton<ILedService, LedService>();
             builder.Services.AddSingleton<ILcdService, LcdService>();
-            builder.Services.AddSingleton<ITakoReaderService, TakoReaderService>();
+            builder.Services.AddSingleton<ITrainCoupledService, TrainCoupledService>();
+            builder.Services.AddSingleton<ITakoReaderService, TakoReaderService>(); 
             builder.Services.AddSingleton<IRouteService, RouteService>();
+            builder.Services.AddSingleton<ISyncManager, SyncManager>();
             builder.Services.AddSingleton<ITrainManagement, TrainManagement>();
 
-
+            builder.Services.AddSingleton<IRabbitService, RabbitService>();
+            
             builder.Services.AddHostedService<TakoDataCommand>();
             builder.Services.AddHttpClient<TakoReaderService>();
+
+            //// LoggerBackgroundService'i ekle
+            //builder.Services.AddHostedService<LoggerBackgroundService>();
+
+            // LogEndpointSettings sýnýfýna baðla.
+            builder.Services.Configure<LogEndpointSettings>(
+                builder.Configuration.GetSection("LogEndpoints")
+            );
             builder.Services.AddHttpClient<LoggerHelper>();
 
+
+           
 
             //Console da log seviyesini belirleme
             builder.Logging.ClearProviders();

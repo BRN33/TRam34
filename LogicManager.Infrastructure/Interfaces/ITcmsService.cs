@@ -14,6 +14,8 @@ public interface ITcmsService
     Task<bool> CheckIfLeaderAsync();//Master-Slave durum kontrolü
 
     Task<bool> IsConnectedAsync();
-   
-    event EventHandler<TcmsData> OnTcmsDataReceived;
+    Task<TcmsData> GetLatestTakoDataAsync();
+
+    //event EventHandler<TcmsData> OnTakoDataUpdated;
+    event Action<TcmsData> OnTakoDataUpdated;
 }

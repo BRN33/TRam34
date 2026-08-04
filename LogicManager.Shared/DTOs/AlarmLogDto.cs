@@ -4,6 +4,6 @@ namespace LogicManager.Shared.DTOs;
 
 public class AlarmLogDto:BaseEntityDto
 {
-    public string? AlarmType { get; set; }
+    public string? MessageSourceType { get; set; }
     public string? HardwareIP { get; set; }
 }

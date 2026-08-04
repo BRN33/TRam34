@@ -1,8 +1,23 @@
-!LogicManager/**
-bin/                     # bin klasörünü ve içeriğini yok say
-obj/                     # obj klasörünü ve içeriğini yok say
-*.suo                    # *.suo uzantılı dosyaları yok say
-*.user                   # *.user uzantılı dosyaları yok say
-*.csproj.user            # *.csproj.user uzantılı dosyaları yok say
-__pycache__/             # __pycache__ klasörünü ve içeriğini yok say (Python projeleri için)
-.DS_Store                # .DS_Store dosyasını yok say (macOS için)
+# Visual Studio
+.vs/
+
+# Build
+**/bin/
+**/obj/
+
+# User files
+*.user
+*.csproj.user
+*.suo
+
+# Publish
+publish/
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+
+# macOS
+.DS_Store

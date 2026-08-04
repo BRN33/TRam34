@@ -2,84 +2,128 @@
 using LogicManager.Infrastructure.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Shared;
 using System.Net.Http.Json;
+using TRAM34_DDU.Core.Application.Interfaces.Services;
+using TRAM34_DDU.Core.Application.RabbitMQService;
 
 namespace LogicManager.Infrastructure.Services
 {
     public class TcmsService : ITcmsService
     {
-        private readonly HttpClient _httpClient;
+
         private readonly ILogger<TcmsService> _logger;
-        private readonly string _tcmsApiUrl;
-        private bool _isConnected;
-        private Timer? _pollingTimer;
+        private readonly object _lock = new object();
+        private TcmsData _currentData = new TcmsData();
+        public event Action<TcmsData>? OnTakoDataUpdated; // Güncellenen veriyi bildirmek için event
+        private readonly IRabbitService RabbitMQService;
 
-        public event EventHandler<TcmsData>? OnTcmsDataReceived;
-
-        public TcmsService(ILogger<TcmsService> logger, IConfiguration configuration)
+        public TcmsService(IRabbitService rabbitService)
         {
-            _logger = logger;
-            _tcmsApiUrl = configuration["TcmsSettings:ApiUrl"] ?? "http://localhost:5000/api/tcms";
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(_tcmsApiUrl)
-            };
-
-            // TCMS verilerini periyodik olarak al
-            _pollingTimer = new Timer(PollTcmsData, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
+            RabbitMQService = rabbitService;
+            InitializeRabbitMQConsumer();
         }
 
-        public async Task<TcmsData> GetTcmsDataAsync()
+        private async void InitializeRabbitMQConsumer()
+        {
+
+            await RabbitMQService.ConsumerAsync<string>(
+            RabbitMQConstants.RabbitMQHost,
+            RabbitMQConstants.TakoReadExchangeName,
+            ExchangeType.Fanout,
+            RabbitMQConstants.TakoQueueName,
+            "",
+            ManagementEnum.Live,
+            HandleNewTakoData);
+
+
+        }
+
+        private async Task HandleNewTakoData(string jsonMessage)
         {
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<TcmsData>("/status");
-                if (response != null)
+                var newData = JsonConvert.DeserializeObject<TcmsData>(jsonMessage);
+                if (newData != null)
                 {
-                    _isConnected = true;
-                    OnTcmsDataReceived?.Invoke(this, response);
-                    return response;
+                    lock (_lock)
+                    {
+                        _currentData = newData;
+                    }
+                    OnTakoDataUpdated?.Invoke(newData);
                 }
-
-                throw new Exception("TCMS data is null");
             }
             catch (Exception ex)
             {
-                _isConnected = false;
-                _logger.LogError(ex, "TCMS veri alma hatası");
-                return new TcmsData
-                {
-                    ZeroSpeed = 0,
-                    DoorLeftReleased = false,
-                    DoorRightReleased = false,
-                    EmergencyBrakeActive = false,
-                    ServiceBrakeActive = false,
-                    BatteryVoltage = 0,
-                    Timestamp = DateTime.Now
-                };
+               Console.WriteLine($"Deserialization edilirken hata olustu: {ex.Message}");
             }
         }
 
-        public Task<bool> IsConnectedAsync()
+
+        //private async Task HandleNewTakoData(TcmsData newData)
+        //{
+        //    lock (_lock)
+        //    {
+        //        _currentData =  newData; // Güncel veriyi sakla
+
+        //        //var obj = JsonConvert.DeserializeObject<TcmsData>(_currentData);
+
+        //    }
+
+        //    OnTakoDataUpdated?.Invoke(newData); // Event'i tetikle, dinleyen sınıflar güncellemeyi alsın
+        //}
+        //private async Task HandleNewTakoData(string jsonString)
+        //{
+        //    try
+        //    {
+        //        TcmsData newData = JsonConvert.DeserializeObject<TcmsData>(jsonString);
+
+        //        if (newData != null)
+        //        {
+        //            lock (_lock)
+        //            {
+        //                _currentData = newData;
+        //            }
+
+        //            OnTakoDataUpdated?.Invoke(newData);
+        //        }
+        //        else
+        //        {
+        //            _logger.LogError("JSON deserialization failed.");
+        //        }
+        //    }
+        //    catch (JsonException ex)
+        //    {
+        //        _logger.LogError($"JSON deserialization error: {ex.Message}");
+        //    }
+        //}
+
+        public Task<TcmsData> GetLatestTakoDataAsync()
         {
-            return Task.FromResult(_isConnected);
+            lock (_lock)
+            {
+                return Task.FromResult(_currentData); // Güncel veriyi döndür
+            }
         }
 
-        private async void PollTcmsData(object? state)
+        public Task<TcmsData> GetTcmsDataAsync()
         {
-            await GetTcmsDataAsync();
-        }
-
-        public void Dispose()
-        {
-            _pollingTimer?.Dispose();
-            _httpClient.Dispose();
+            throw new NotImplementedException();
         }
 
         public Task<bool> CheckIfLeaderAsync()
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> IsConnectedAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 
 }
