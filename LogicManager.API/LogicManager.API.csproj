@@ -6,6 +6,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<!-- VS 17.8 / Roslyn 4.8 uyumluluğu için Razor source generator kapatıldı -->
+		<UseRazorSourceGenerator>false</UseRazorSourceGenerator>
 		
 	</PropertyGroup>
 
