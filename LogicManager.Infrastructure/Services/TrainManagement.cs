@@ -37,7 +37,9 @@ public class TrainManagement : ITrainManagement
     public List<Station> _stations;
     private const string LastPositionFile = "last_position.json";
 
-    private const int TAKO_DISTANCE_FACTOR = 5; // Her tako pulse için mesafe çarpanı
+    // Tako mesafe hesaplama ayarları (appsettings.json'dan okunur)
+    private readonly string _takoDataType; // "Pulse" veya "Meter"
+    private readonly int _takoDistanceFactor; // Pulse modunda metre çarpanı
 
     public int _currentStationIndex;
     private object _currentDistance;
@@ -88,6 +90,12 @@ public class TrainManagement : ITrainManagement
         _rabbitService = _serviceProvider.ServiceProvider.GetRequiredService<IRabbitService>();
         _syncManager = _serviceProvider.ServiceProvider.GetRequiredService<ISyncManager>();
         istasyondanCıkısMesafesi = Convert.ToInt32(configuration["TcmsSettings:istasyondanCıkısMesafesi"]);
+        
+        // Tako mesafe hesaplama ayarlarını oku
+        _takoDataType = configuration["TcmsSettings:TakoDataType"] ?? "Pulse";
+        _takoDistanceFactor = Convert.ToInt32(configuration["TcmsSettings:TakoDistanceFactor"] ?? "5");
+        Console.WriteLine($"[TAKO CONFIG] Veri Tipi: {_takoDataType}, Çarpan: {_takoDistanceFactor}");
+        
         _stations = new List<Station>();
 
         _ybsPcIp = _mongoDbService.GetYbsPcIpAsync().GetAwaiter().GetResult();
@@ -377,9 +385,24 @@ public class TrainManagement : ITrainManagement
     public int CalculateDistance(int tako)
     {
         // Tako değerinden mesafe hesaplama mantığı
-        tako = tako + TAKO_DISTANCE_FACTOR;  // Mevcut mesafeye ekleme
+        if (_takoDataType.Equals("Pulse", StringComparison.OrdinalIgnoreCase))
+        {
+            // Pulse modu: Çarpan kullanarak pulse'u metreye çevir
+            tako = tako + _takoDistanceFactor;
+        }
+        else if (_takoDataType.Equals("Meter", StringComparison.OrdinalIgnoreCase))
+        {
+            // Metre modu: Direkt kullan (çarpan yok)
+            tako = tako + 1;
+        }
+        else
+        {
+            // Geçersiz mod: Varsayılan olarak pulse modu kullan
+            Console.WriteLine($"[UYARI] Geçersiz TakoDataType: {_takoDataType}. Varsayılan 'Pulse' modu kullanılıyor.");
+            tako = tako + _takoDistanceFactor;
+        }
+        
         return tako;
-
     }
 
     // **3. Tako Verisini Okuma ve İşleme fonksiyonu
