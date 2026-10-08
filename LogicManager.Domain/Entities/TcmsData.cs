@@ -3,7 +3,8 @@
 
 public class TcmsData
 {
-    public bool TachoMeterPulse { get; set; }
+    public bool TachoMeterPulse { get; set; } // Pulse modu: her durum değişimi = PulseDistanceMeters
+    public double? TachoMeterDistance { get; set; } // Meter modu: TCMS'in gönderdiği metraj (kümülatif veya istasyonda sıfırlanan)
     public bool ZeroSpeed { get; set; }
     public double TrainSpeed { get; set; }
     public Doors Doors { get; set; } = new Doors();

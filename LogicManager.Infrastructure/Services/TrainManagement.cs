@@ -37,9 +37,8 @@ public class TrainManagement : ITrainManagement
     public List<Station> _stations;
     private const string LastPositionFile = "last_position.json";
 
-    // Tako mesafe hesaplama ayarları (appsettings.json'dan okunur)
-    private readonly string _takoDataType; // "Pulse" veya "Meter"
-    private readonly int _takoDistanceFactor; // Pulse modunda metre çarpanı
+    // Tako mesafe hesaplayıcı (Pulse / Meter modu appsettings.json'dan okunur)
+    private readonly TakoDistanceCalculator _takoCalculator;
 
     public int _currentStationIndex;
     private object _currentDistance;
@@ -92,9 +91,12 @@ public class TrainManagement : ITrainManagement
         istasyondanCıkısMesafesi = Convert.ToInt32(configuration["TcmsSettings:istasyondanCıkısMesafesi"]);
         
         // Tako mesafe hesaplama ayarlarını oku
-        _takoDataType = configuration["TcmsSettings:TakoDataType"] ?? "Pulse";
-        _takoDistanceFactor = Convert.ToInt32(configuration["TcmsSettings:TakoDistanceFactor"] ?? "5");
-        Console.WriteLine($"[TAKO CONFIG] Veri Tipi: {_takoDataType}, Çarpan: {_takoDistanceFactor}");
+        var takoMode = TakoDistanceCalculator.ParseMode(configuration["TcmsSettings:TakoDataType"]);
+        var pulseDistance = configuration.GetValue<double?>("TcmsSettings:PulseDistanceMeters") ?? 2;
+        var countBothEdges = configuration.GetValue<bool?>("TcmsSettings:CountBothEdges") ?? true;
+        _takoCalculator = new TakoDistanceCalculator(takoMode, pulseDistance, countBothEdges);
+        _takoCalculator.OnWarning += msg => Console.WriteLine($"[TAKO UYARI] {msg}");
+        Console.WriteLine($"[TAKO CONFIG] Mod: {takoMode}, PulseDistanceMeters: {pulseDistance}, CountBothEdges: {countBothEdges}");
         
         _stations = new List<Station>();
 
@@ -110,7 +112,9 @@ public class TrainManagement : ITrainManagement
         _tcmsService.OnTakoDataUpdated += (takoData) =>
         {
             ZeroSpeed = takoData.ZeroSpeed;
-            AllDoorReleased = takoData.Doors.AllDoorReleased;
+            AllDoorReleased = takoData.Doors?.AllDoorReleased ?? false;
+            // Mesafe, 100 ms döngüsünde değil HER TCMS MESAJINDA hesaplanır → döngü hızı pulse kaçırmaya sebep olmaz
+            _takoCalculator.Process(takoData.TachoMeterPulse, takoData.TachoMeterDistance, takoData.TrainSpeed, DateTime.Now);
             //OnTakoDataUpdated?.Invoke(takoData);
         };
         //_tcmsService.OnTakoDataUpdated += _tcmsService_OnTakoDataUpdated;
@@ -320,6 +324,7 @@ public class TrainManagement : ITrainManagement
             _currentStationIndex = _lastSyncData.StationIndex;
             _currentDistance = _lastSyncData.RemainingDistance ?? _lastSyncData.DistanceFromStart ?? 0;
             _TachoMeterPulse = _lastSyncData.RemainingDistance ?? _lastSyncData.DistanceFromStart ?? 0;
+            _takoCalculator.SetSegmentDistance(_TachoMeterPulse);
 
             //_stations = _stations.Skip(_currentStationIndex).ToList();
 
@@ -346,6 +351,7 @@ public class TrainManagement : ITrainManagement
         _currentStationIndex = Math.Max(message.StationIndex, 0);
         _currentDistance = message.RemainingDistance ?? message.DistanceFromStart ?? 0;
         _TachoMeterPulse = message.RemainingDistance ?? message.DistanceFromStart ?? 0;
+        _takoCalculator.SetSegmentDistance(_TachoMeterPulse);
         _isRouteActive = true;
         //_nextStation = message.NextStation;
 
@@ -361,6 +367,7 @@ public class TrainManagement : ITrainManagement
         //PublishDataToAllCoupledTrainsAsync(_lastSyncData!); //2 . programın kapanıp tekrar acılması durumunda rotanın devam etmesi icin yazıldı .  1. acılırsa buda heryerde Acılabilir
         _isRouteActive = true;
         _currentStationIndex = 0;
+        _takoCalculator.ResetSegment();
         _TachoMeterPulse = 0;
         _hasStartAnnouncementPlayed = false;
         _approachingAnnouncementMade = false;
@@ -381,29 +388,8 @@ public class TrainManagement : ITrainManagement
     }
 
 
-    //Tako hesaplama fonksiyonu
-    public int CalculateDistance(int tako)
-    {
-        // Tako değerinden mesafe hesaplama mantığı
-        if (_takoDataType.Equals("Pulse", StringComparison.OrdinalIgnoreCase))
-        {
-            // Pulse modu: Çarpan kullanarak pulse'u metreye çevir
-            tako = tako + _takoDistanceFactor;
-        }
-        else if (_takoDataType.Equals("Meter", StringComparison.OrdinalIgnoreCase))
-        {
-            // Metre modu: Direkt kullan (çarpan yok)
-            tako = tako + 1;
-        }
-        else
-        {
-            // Geçersiz mod: Varsayılan olarak pulse modu kullan
-            Console.WriteLine($"[UYARI] Geçersiz TakoDataType: {_takoDataType}. Varsayılan 'Pulse' modu kullanılıyor.");
-            tako = tako + _takoDistanceFactor;
-        }
-        
-        return tako;
-    }
+    //Tako hesaplama: istasyondan bu yana kat edilen mesafe (Pulse/Meter moduna göre TakoDistanceCalculator hesaplar)
+    public int CalculateDistance() => _takoCalculator.SegmentDistanceMeters;
 
     // **3. Tako Verisini Okuma ve İşleme fonksiyonu
     public async Task ReadAndProcessTakoAsync()
@@ -429,12 +415,11 @@ public class TrainManagement : ITrainManagement
 
             //takoValue = await _takoReaderService.ReadTakoPulseAsync();  // Tako verisini oku
 
-            var tcmsData = await _tcmsService.GetLatestTakoDataAsync();
-
-            //if ((tcmsData != null && tcmsData?.TachoMeterPulse == true) || takoValue == 1)
-            if ((tcmsData != null && tcmsData?.TachoMeterPulse == true))
+            // Mesafe TCMS event'inde biriktirilir; burada sadece güncel değer okunur
+            var newDistance = CalculateDistance();
+            if (newDistance != _TachoMeterPulse)
             {
-                _TachoMeterPulse = CalculateDistance(_TachoMeterPulse);
+                _TachoMeterPulse = newDistance;
 
                 Console.WriteLine($"TAKO verisi suan : {_TachoMeterPulse} at {currentTime}");
                 _logService?.InformationSendLogAsync(new InformationLogDto
@@ -616,6 +601,7 @@ public class TrainManagement : ITrainManagement
     private async Task ResetTakoAsync()
     {
         //await _takoReaderService.ResetTakoPulseAsync();
+        _takoCalculator.ResetSegment(); // mantıksal sıfırlama (TCMS'e reset gönderilmez)
         _TachoMeterPulse = 0;
 
         Console.WriteLine("Tako değeri sıfırlandı ve RabbitMQ ye bilgi gönderildi");
@@ -716,6 +702,7 @@ public class TrainManagement : ITrainManagement
     // Sonraki istasyona geçiş fonksiyonu
     public async Task MoveToNextStationAsync()
     {
+        _takoCalculator.ResetSegment();
         _TachoMeterPulse = 0;
         // Bayrakları sıfırla
         _approachingAnnouncementMade = false;

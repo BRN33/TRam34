@@ -27,7 +27,7 @@ namespace LogicManager.Infrastructure.Interfaces
 
         bool IsLastStation();
 
-        int CalculateDistance(int takoValue);
+        int CalculateDistance(); // İstasyondan bu yana kat edilen mesafe (metre)
         Task ReadAndProcessTakoAsync();
        
     }
